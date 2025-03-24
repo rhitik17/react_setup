@@ -18,7 +18,7 @@ const useTokenStore = create<TokenState>()(
       setLanguage: (language) => set({ language }),
     }),
     {
-      name: "ntuc-token",
+      name: "disease-token",
       storage: createJSONStorage(() => localStorage),
     }
   )
@@ -45,7 +45,7 @@ export const useUserStore = create<UserStore>()(
       removeUserProfile: () => set({ userProfile: null }),
     }),
     {
-      name: "ntuc-user",
+      name: "disease-user",
       storage: createJSONStorage(() => localStorage),
     }
   )

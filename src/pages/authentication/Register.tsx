@@ -3,176 +3,188 @@ import useTokenStore, { useEmailStore } from "../../stores/tokenStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { registerApi } from "../../services/endpoints/authService";
-import FormInput from "../../components/common/FormInput";
-import PasswordInput from "../../components/common/PasswordInput";
-import RedButton from "../../components/common/RedButton";
+import {
+  TextInput,
+  PasswordInput,
+  Select,
+  Button,
+  Box,
+  Title,
+  Text,
+  Stack,
+} from "@mantine/core";
+import { useForm } from "@mantine/form";
+
+interface FormValues {
+  email: string;
+  username: string;
+  name: string;
+  dob: string;
+  address: string;
+  mobile_no: string;
+  gender: string;
+  password: string;
+  confirm_password: string;
+}
 
 const Register = () => {
   const { email } = useEmailStore();
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<any>({});
-  const [formData, setFormData] = useState({
-    affiliateName: "",
-    fullName: "",
-    contactPerson: "",
-    phone: "",
-    password: "",
-  });
   const router = useNavigate();
   const { setToken } = useTokenStore();
 
+  const form = useForm<FormValues>({
+    initialValues: {
+      email: email || "",
+      username: "",
+      name: "",
+      dob: "",
+      address: "",
+      mobile_no: "",
+      gender: "Male",
+      password: "",
+      confirm_password: "",
+    },
+
+    validate: {
+      email: (value: string) =>
+        /^\S+@\S+$/.test(value) ? null : "Invalid email",
+      username: (value: string) => (value ? null : "Username is required"),
+      name: (value: string) => (value ? null : "Name is required"),
+      dob: (value: string) => (value ? null : "Date of birth is required"),
+      address: (value: string) => (value ? null : "Address is required"),
+      mobile_no: (value: string) =>
+        value ? null : "Mobile number is required",
+      password: (value: string) =>
+        value.length < 6 ? "Password must be at least 6 characters" : null,
+      confirm_password: (value: string, values: any) =>
+        value !== values?.password ? "Passwords did not match" : null,
+    },
+  });
+
   useEffect(() => {
     if (email) {
-      setFormData((prevData) => ({
-        ...prevData,
-        input: email || "",
-      }));
+      form.setFieldValue("email", email);
     }
   }, [email]);
 
-  // Handle input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value.trim(),
-    }));
-  };
+  const handleSubmit = async (values: FormValues) => {
+    const payload = {
+      user_type: "Patient",
+      password: values.password,
+      confirm_password: values.confirm_password,
+      data: {
+        email: values.email,
+        username: values.username,
+        name: values.name,
+        dob: values.dob,
+        address: values.address,
+        mobile_no: values.mobile_no,
+        gender: values.gender,
+      },
+    };
 
-  const validateForm = () => {
-    const { affiliateName, contactPerson, phone, password } = formData;
-    let errors: any = {};
-    // Validate Permanent Address
-    if (!affiliateName) errors.email = "affiliateName is required.";
-    if (!contactPerson) errors.password = "contactPerson is required.";
-    if (!phone) errors.password = "phone is required.";
-    if (!password) errors.password = "Password is required.";
-
-    setErrors(errors);
-    return errors;
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
     try {
       setLoading(true);
-      const response = await registerApi(formData);
+      const response = await registerApi(payload);
       if (response.results.token) {
         setToken(response.results.token);
         toast.success(response.message);
         router("/otp-verifation");
       }
-    } catch (error: any) {
-      toast.error(error);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Registration failed"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-screen flex items-center  justify-center   ">
-      <div className="w-full max-w-xl gap-4 flex flex-col  items-center justify-center h-full max-h-[80vh] border-gray-300 border p-10 ">
-        {/* Header Section */}
-        {/* <div className="flex flex-row gap-4  ">
-          <div>
-            <img
-              src="/logo.svg"
-              alt="logo"
-              className="w-full h-full object-contain"
+    <Box className="w-full h-full py-4 flex items-center justify-center">
+      <Box className="w-full max-w-xl gap-4 flex flex-col items-center justify-center h-full  border-gray-300 border p-10 rounded-xl shadow-lg">
+        <Stack align="center" mb="md">
+          <Title order={2}>Register</Title>
+          <Text c="dimmed" size="sm">
+            Sign up has never been this easy
+          </Text>
+        </Stack>
+
+        <form onSubmit={form.onSubmit(handleSubmit)} className="w-full">
+          <Stack gap={"sm"}>
+            <TextInput
+              label="Email"
+              placeholder="Enter your email"
+              {...form.getInputProps("email")}
             />
-          </div>
-          <div className="flex flex-col gap-3 w-full">
-            <h1 className="text-xl  font-bold text-zinc-900">
-              Nepal Trade Union Congress
-            </h1>
-            <p className="text-base text-zinc-900">
-              नेपाल ट्रेड युनियन काँग्रेस
-            </p>
-          </div>
-        </div> */}
 
-        {/* Welcome Section */}
-        <div className="w-full flex flex-col justify-center items-center gap-3 ">
-          <h2 className="text-3xl font-semibold text-zinc-900">Register</h2>
-          <p className="text-base text-gray-600">
-            sign up has never been this easy
-          </p>
-        </div>
+            <TextInput
+              label="Username"
+              placeholder="Choose a username"
+              {...form.getInputProps("username")}
+            />
 
-        {/* Login Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="w-full flex flex-col gap-4  bg-white  "
-        >
-          <FormInput
-            label="Affiliate Name"
-            name="affiliateName"
-            type="text"
-            placeholder=""
-            value={formData.affiliateName}
-            onChange={handleInputChange}
-            InputClassName="h-11"
-            required={true}
-            error={errors?.AffiliateName}
-          />
-          <FormInput
-            label="Full name"
-            name="fullName"
-            type="text"
-            placeholder=""
-            value={formData.fullName}
-            onChange={handleInputChange}
-            InputClassName="h-11"
-            required={true}
-            error={errors?.fullName}
-          />
+            <TextInput
+              label="Full Name"
+              placeholder="Enter your full name"
+              {...form.getInputProps("name")}
+            />
 
-          <FormInput
-            label="Phone Number"
-            name="phone"
-            type="text"
-            placeholder=""
-            value={formData.phone}
-            onChange={handleInputChange}
-            InputClassName="h-11"
-            required={true}
-            error={errors?.phone}
-          />
+            <TextInput
+              type="date"
+              label="Date of Birth"
+              {...form.getInputProps("dob")}
+            />
 
-          <PasswordInput
-            label="Password"
-            name="password"
-            placeholder="*******"
-            onChange={handleInputChange}
-            InputClassName="h-11"
-            required={true}
-            error={errors?.password}
-          />
+            <TextInput
+              label="Address"
+              placeholder="Enter your address"
+              {...form.getInputProps("address")}
+            />
 
-          {/* Sign In Button */}
-          <RedButton
-            text="Get started"
-            className="h-11 w-full flex items-center text-center justify-center"
-            disable={loading}
-            loading={loading}
-            loadingPosition="back"
-          />
+            <TextInput
+              label="Mobile Number"
+              placeholder="Enter your mobile number"
+              {...form.getInputProps("mobile_no")}
+            />
+
+            <Select
+              label="Gender"
+              data={[
+                { value: "Male", label: "Male" },
+                { value: "Female", label: "Female" },
+                { value: "Other", label: "Other" },
+              ]}
+              {...form.getInputProps("gender")}
+            />
+
+            <PasswordInput
+              label="Password"
+              placeholder="Enter password"
+              {...form.getInputProps("password")}
+            />
+
+            <PasswordInput
+              label="Confirm Password"
+              placeholder="Confirm password"
+              {...form.getInputProps("confirm_password")}
+            />
+
+            <Button type="submit" loading={loading} fullWidth>
+              Register
+            </Button>
+          </Stack>
         </form>
 
-        {/* Footer */}
-        <div className=" text-sm text-gray-600">
+        <Text size="sm" c="dimmed" mt="sm">
           Already have an account?{" "}
-          <a href="/login" className="text-gray-800 font-semibold">
+          <Text component="a" href="/login" fw={500} c="dark">
             Log in
-          </a>
-        </div>
-      </div>
-    </div>
+          </Text>
+        </Text>
+      </Box>
+    </Box>
   );
 };
 

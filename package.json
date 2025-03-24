@@ -11,8 +11,13 @@
     "tailwind": "tailwindcss init -p"
   },
   "dependencies": {
+    "@mantine/core": "^7.17.2",
+    "@mantine/form": "^7.17.2",
+    "@mantine/hooks": "^7.17.2",
     "axios": "^1.8.4",
     "framer-motion": "^12.5.0",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
