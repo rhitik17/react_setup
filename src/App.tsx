@@ -7,9 +7,9 @@ import {
 import { ToastContainer } from "react-toastify";
 import useTokenStore from "./stores/tokenStore";
 // import SideBarLayout from "./components/layout/SideBarLayout";
-import { privateRoutes } from "./routes/privateRoutes"; 
+import { privateRoutes } from "./routes/privateRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
-
+// import "@mantine/core/styles.css";
 
 function App() {
   const { token } = useTokenStore();
@@ -40,14 +40,14 @@ function App() {
           element={
             token ? (
               // <SideBarLayout>
-                <Routes>
-                  {privateRoutes.map(({ path, element }) => (
-                    <Route key={path} path={path} element={element} />
-                  ))}
-                </Routes>
-              // </SideBarLayout>
+              <Routes>
+                {privateRoutes.map(({ path, element }) => (
+                  <Route key={path} path={path} element={element} />
+                ))}
+              </Routes>
             ) : (
-              <Navigate to="/login" />
+              // </SideBarLayout>
+              <Navigate to="/" />
             )
           }
         />

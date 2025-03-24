@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const api = axios.create({
   // baseURL: "http://192.168.1.67:5007/api/v1/",
-  baseURL: "https://form.upliftsolutions.com.np/api/v1/",
+  baseURL: "",
 });
 
 // Setup request interceptor
