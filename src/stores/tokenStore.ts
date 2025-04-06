@@ -32,7 +32,11 @@ interface UserStore {
     role: string | null;
     userHandle: string | null;
     connectedTo: string | null;
+    otpVerified: boolean | null;
+    token: string | null;
+    refreshToken: string | null;
   } | null;
+
   setUserProfile: (profile: UserStore["userProfile"]) => void;
   removeUserProfile: () => void;
 }
@@ -45,7 +49,7 @@ export const useUserStore = create<UserStore>()(
       removeUserProfile: () => set({ userProfile: null }),
     }),
     {
-      name: "disease-user",
+      name: "disease-user", // Key for localStorage
       storage: createJSONStorage(() => localStorage),
     }
   )

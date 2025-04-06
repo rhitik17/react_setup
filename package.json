@@ -11,9 +11,12 @@
     "tailwind": "tailwindcss init -p"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@mantine/charts": "^7.17.3",
     "@mantine/core": "^7.17.2",
     "@mantine/form": "^7.17.2",
     "@mantine/hooks": "^7.17.2",
+    "@tabler/icons-react": "^3.31.0",
     "axios": "^1.8.4",
     "framer-motion": "^12.5.0",
     "postcss-preset-mantine": "^1.17.0",
@@ -23,6 +26,7 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.4.0",
     "react-toastify": "^11.0.5",
+    "recharts": "^2.15.2",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

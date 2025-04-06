@@ -8,7 +8,7 @@ interface LoginData {
 
 export const loginApi = async (formData: LoginData) => {
   try {
-    const response = await api.post("systemuser/login", formData);
+    const response = await api.post("auth/login/", formData);
     return response.data;
   } catch (error) {
     console.error("Error creating post:", error);
@@ -17,19 +17,23 @@ export const loginApi = async (formData: LoginData) => {
 };
 
 interface RegisterData {
-  affiliateName: string;
-  contactPerson: string;
-  phone: string;
+  user_type: string;
   password: string;
+  confirm_password: string;
+  data: {
+    email: string;
+    username: string;
+    name: string;
+    mobile_no: string;
+    gender: string;
+    dob: string;
+    address: string;
+  };
 }
 
 export const registerApi = async (formData: RegisterData) => {
   try {
-    const response = await api.post("systemuser/register", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await api.post("auth/signup/", formData);
     return response.data;
   } catch (error) {
     console.error("Error creating post:", error);
@@ -43,7 +47,7 @@ interface OtpData {
 
 export const otpVerify = async (formData: OtpData) => {
   try {
-    const response = await api.post("/systemuser/otpverify", formData, {});
+    const response = await api.post("auth/validate-otp/", formData, {});
     return response.data;
   } catch (error) {
     console.error("Error creating post:", error);
@@ -51,7 +55,7 @@ export const otpVerify = async (formData: OtpData) => {
   }
 };
 
-export const resendOtp = async (formData: any) => {
+export const resendOtp = async (formData: OtpData) => {
   try {
     const response = await api.post("/otpverify", formData, {});
     return response.data;

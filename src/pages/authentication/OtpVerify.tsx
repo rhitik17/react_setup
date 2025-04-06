@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
-import useTokenStore from "../../stores/tokenStore";
+import useTokenStore, {
+  useEmailStore,
+  useUserStore,
+} from "../../stores/tokenStore";
 import { otpVerify, resendOtp } from "../../services/endpoints/authService";
 import { toast } from "react-toastify";
 import { SpinningLoader2 } from "../../components/common/loading/SpinningLoader";
 import { Icons } from "../../assets/icons";
+import { useNavigate } from "react-router-dom";
 
 interface OtpFormData {
   otp: string[];
@@ -12,6 +16,9 @@ const OtpVerify = () => {
   const [formData, setFormData] = useState<OtpFormData>({
     otp: Array(4).fill(""),
   });
+  const navigate = useNavigate();
+  const { email } = useEmailStore();
+  const { setUserProfile } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
@@ -64,7 +71,7 @@ const OtpVerify = () => {
 
     try {
       const payload = {
-        input: "input",
+        email: email,
         otp: otp,
       };
       const response = await otpVerify(payload);
@@ -72,7 +79,9 @@ const OtpVerify = () => {
       if (response?.results?.token) {
         setToken(response.results.token);
         toast.success(response.message);
+        setUserProfile(response.results);
       }
+      navigate("/home");
     } catch (err: any) {
       setError(err?.message || "Failed to verify OTP. Please try again.");
     } finally {
@@ -86,7 +95,7 @@ const OtpVerify = () => {
   const handleResendCode = async () => {
     try {
       const payload = {
-        input: "input",
+        email: email,
         otp: "",
       };
       const response = await resendOtp(payload);

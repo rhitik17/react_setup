@@ -11,7 +11,7 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
   const [formData, setFormData] = useState({
-    input: "",
+    email: "",
   });
 
   const router = useNavigate();
@@ -28,8 +28,8 @@ const ForgotPassword = () => {
   // Form validation
   const validateForm = () => {
     const errors: any = {};
-    if (!formData.input) {
-      errors.input = "Email or Phone is required.";
+    if (!formData.email) {
+      errors.email = "Email or Phone is required.";
     }
     return errors;
   };
@@ -86,9 +86,10 @@ const ForgotPassword = () => {
         >
           <FormInput
             label="Email / Phone"
-            name="input"
+            name="email"
             type="text"
             placeholder="Enter your email"
+            value={formData.email}
             onChange={handleInputChange}
             InputClassName="h-11"
             required={true}

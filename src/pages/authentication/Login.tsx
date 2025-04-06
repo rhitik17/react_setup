@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import useTokenStore, { useEmailStore, useUserStore } from "../../stores/tokenStore";
+import useTokenStore, {
+  useEmailStore,
+  useUserStore,
+} from "../../stores/tokenStore";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/common/FormInput";
 import PasswordInput from "../../components/common/PasswordInput";
 import RedButton from "../../components/common/RedButton";
 import { loginApi } from "../../services/endpoints/authService";
 import { toast } from "react-toastify";
-
 
 interface FormErrors {
   email?: string;
@@ -33,23 +35,23 @@ const Login = () => {
 
   useEffect(() => {
     if (email) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        email: email
+        email: email,
       }));
     }
   }, [email]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value.trim()
+      [name]: value.trim(),
     }));
     if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: undefined
+        [name]: undefined,
       }));
     }
   };
@@ -85,12 +87,12 @@ const Login = () => {
     try {
       setLoading(true);
       const response = await loginApi(formData);
-      
-      if (response.results?.token) {
-        toast.success(response.message); 
-        setToken(response.results.token);
-        setUserProfile(response.results.user);
-        navigate("/");
+
+      if (response) {
+        toast.success("login successfully");
+        setToken(response.token);
+        setUserProfile(response);
+        navigate("/home");
       } else {
         toast.error(response.message || "Invalid response from server");
       }
@@ -184,8 +186,8 @@ const Login = () => {
           {/* Footer */}
           <div className="text-center text-sm text-gray-600">
             Don't have an account?{" "}
-            <a 
-              href="/register" 
+            <a
+              href="/register"
               className="font-semibold text-gray-900 hover:text-gray-700 transition-colors"
             >
               Sign up
