@@ -32,19 +32,17 @@ function App() {
                   path={path}
                   element={
                     <>
-                      <div
-                        className="flex flex-col"
-                        style={{
-                          height: "calc(100vh - 60px)",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <TopBar />
-                        <div className="flex w-full flex-grow">
-                          <div className="">
+                      <div className="h-screen flex flex-col">
+                        <div className="sticky top-0 z-50  ">
+                          <TopBar />
+                        </div>
+                        <div className="flex flex-1 overflow-hidden">
+                          <div className="sticky top-0 h-full">
                             <Sidebar />
                           </div>
-                          <div className="w-10/12 overflow-auto">{element}</div>
+                          <div className="flex-1 overflow-y-auto py-4">
+                            {element}
+                          </div>
                         </div>
                       </div>
                     </>

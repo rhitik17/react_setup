@@ -11,20 +11,20 @@ import {
 
 const Sidebar = () => {
   return (
-    <div className="bg-[#6a00f4] text-white w-64 h-[90vh] p-4">
+    <div className=" text-black  bg-[#F5F5F5]  w-64 h-screen p-4">
       <h2 className="text-xl font-bold mb-4">Navigation</h2>
       <ul>
         <li>
           <NavLink
             to="/dashboard"
-            className="flex items-center p-2 hover:bg-gray-700"
+            className="flex items-center p-2 hover:bg-white  hover:scale-105 transition-all ease-in-out duration-300"
           >
             <IconHome className="mr-2" /> Dashboard
           </NavLink>
         </li>
         <li>
           <NavLink
-            to="/predict-disease"
+            to="/predict"
             className="flex items-center p-2 hover:bg-gray-700"
           >
             <IconStethoscope className="mr-2" /> Predict Disease
@@ -40,10 +40,10 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/appointments"
+            to="/consultation"
             className="flex items-center p-2 hover:bg-gray-700"
           >
-            <IconCalendar className="mr-2" /> Appointments
+            <IconCalendar className="mr-2" /> Consultation
           </NavLink>
         </li>
         <li>

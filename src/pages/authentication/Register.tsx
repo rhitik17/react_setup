@@ -34,6 +34,22 @@ interface FormValues {
   state_medical_council?: string; // Optional for doctor
 }
 
+const Specialization = [
+  "Infectious Disease Specialist",
+  "Dermatologist",
+  "Hepatologist",
+  "Allergist",
+  "Rheumatologist",
+  "Pulmonologist",
+  "Orthopedist",
+  "General Physician",
+  "Gastroenterologist",
+  "Cardiologist",
+  "Endocrinologist",
+  "Neurologist",
+  "Urologist",
+];
+
 const Register = () => {
   const { email, setEmail } = useEmailStore();
   const [loading, setLoading] = useState(false);
@@ -298,11 +314,12 @@ const Register = () => {
                   defaultValue="MBBS"
                 />
 
-                <TextInput
+                <Select
                   label="Specialization"
                   placeholder="Enter your specialization"
                   {...form.getInputProps("specialization")}
                   defaultValue="Allergist"
+                  data={Specialization}
                 />
 
                 <TextInput

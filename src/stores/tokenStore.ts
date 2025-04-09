@@ -30,6 +30,7 @@ interface UserStore {
     id: string | null;
     email: string | null;
     role: string | null;
+    name: string | null;
     userHandle: string | null;
     connectedTo: string | null;
     otpVerified: boolean | null;

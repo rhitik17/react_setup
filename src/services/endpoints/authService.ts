@@ -3,7 +3,7 @@ import { api } from "../api";
 interface LoginData {
   email: string;
   password: string;
-  connectedTo?: string;
+ 
 }
 
 export const loginApi = async (formData: LoginData) => {
