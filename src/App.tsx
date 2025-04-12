@@ -20,14 +20,14 @@ function App() {
       <Routes>
         {/* Public Routes */}
         {publicRoutes.map(({ path, element }) => (
-          <Route key={path} path={path} element={<>{element}</>} />
+          <Route key={path} path={path} element={element} />
         ))}
 
-        {/* Private Routes */}
-        <Route
-          path="*"
-          element={
-            userProfile?.token ? (
+        {/* If the user is authenticated (token exists), allow access to private routes */}
+        {userProfile?.token && (
+          <Route
+            path="/*"
+            element={
               <Routes>
                 {privateRoutes.map(({ path, element }) => (
                   <Route
@@ -35,17 +35,19 @@ function App() {
                     path={path}
                     element={
                       <>
-                        <div className="h-screen flex flex-col ">
-                          <div className="sticky top-0 z-50  ">
+                        <div className="flex h-screen w-screen bg-primary_bg ">
+                          {/* Sidebar - Fixed Width */}
+                          <Sidebar />
+
+                          {/* Main Content Area */}
+                          <div className="w-9/12 flex flex-col  ">
+                          
                             <TopBar />
-                          </div>
-                          <div className="flex  gap-6 overflow-hidden">
-                            <div className="sticky top-0 h-full">
-                              <Sidebar />
-                            </div>
-                            <div className=" overflow-y-auto h-full w-full py-4 ">
+
+                            {/* Page Content */}
+                            <main className="w-full flex-1 overflow-auto  rounded-xl bg-white mt-20">
                               {element}
-                            </div>
+                            </main>
                           </div>
                         </div>
                       </>
@@ -53,11 +55,14 @@ function App() {
                   />
                 ))}
               </Routes>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+            }
+          />
+        )}
+
+        {/* If the user is NOT authenticated, redirect to login */}
+        {!userProfile?.token && (
+          <Route path="/*" element={<Navigate to="/login" />} />
+        )}
       </Routes>
     </>
   );

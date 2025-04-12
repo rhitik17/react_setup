@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { Box, Button, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { toast } from "react-toastify";
+import { Icons } from "../../assets/icons";
 
 interface ChatMessage {
   id?: string;
@@ -91,41 +92,70 @@ const SingleChat = () => {
 
   return (
     <>
-      <div className="max-w-3xl py-4 h-[78vh] overflow-y-auto w-full mx-auto space-y-4">
-        {[...chats].reverse().map((item, index) => (
-          <div
-            key={item.id || index}
-            className={`w-full flex ${
-              item.sender === userProfile?.email ? "justify-end" : ""
-            }`}
-          >
-            <div
-              className={`p-3 rounded-xl border mb-2 max-w-[80%] shadow-sm border-gray-300 ${
-                item.sender === userProfile?.email
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-300 text-black"
-              } ${item.isTemporary ? "opacity-70" : ""}`}
-            >
-              <div>{item.sender}</div>
-              <div>{item.message}</div>
-            </div>
+      <div className="w-full flex gap-6 px-8">
+        {/* left image */}
+        {userProfile?.role === "Patient" ? (
+          <div className="w-3/12 flex items-center justify-center">
+            <Icons.User className="size-32" />
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className="w-3/12 flex items-center justify-center">
+            <Icons.Stethescope className="size-32" />
+          </div>
+        )}
 
-      <Box className="py-6 border-t flex justify-between w-full max-w-3xl mx-auto">
-        <form onSubmit={handleSendMessage} className="w-full flex gap-4">
-          <TextInput {...form.getInputProps("message")} className="w-full" />
-          <Button
-            type="submit"
-            className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 
+        <div className="w-6/12">
+          <div className="w-full py-4 h-[78vh] overflow-y-auto  mx-auto space-y-4">
+            {[...chats].reverse().map((item, index) => (
+              <div
+                key={item.id || index}
+                className={`w-full flex ${
+                  item.sender === userProfile?.email ? "justify-end" : ""
+                }`}
+              >
+                <div
+                  className={`p-3 rounded-xl border mb-2 max-w-[80%] shadow-sm border-gray-300 ${
+                    item.sender === userProfile?.email
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-300 text-black"
+                  } ${item.isTemporary ? "opacity-70" : ""}`}
+                >
+                  <div>{item.sender}</div>
+                  <div>{item.message}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <Box className="py-6 border-t flex justify-between w-full max-w-3xl mx-auto">
+            <form onSubmit={handleSendMessage} className="w-full flex gap-4">
+              <TextInput
+                {...form.getInputProps("message")}
+                className="w-full"
+              />
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 
                                text-white font-medium rounded-xl shadow-xl hover:shadow-2xl 
                                transform hover:scale-102 transition-all duration-300 w-1/4"
-          >
-            Send
-          </Button>
-        </form>
-      </Box>
+              >
+                Send
+              </Button>
+            </form>
+          </Box>
+        </div>
+
+       {/* right image */}
+       {userProfile?.role === "Patient" ? (
+          <div className="w-3/12 flex items-center justify-center">
+            <Icons.Stethescope className="size-32" />
+          </div>
+        ) : (
+          <div className="w-3/12 flex items-center justify-center">
+            <Icons.User className="size-32" />
+          </div>
+        )}
+      </div>
     </>
   );
 };

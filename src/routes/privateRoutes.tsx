@@ -13,4 +13,8 @@ export const privateRoutes = [
   { path: ROUTES.SINGLECHAT, element: <SingleChat /> },
   { path: ROUTES.DASHBOARD, element: <Dashboard /> },
   { path: ROUTES.CONSULTATION, element: <ConsultationPage /> },
+  { path: ROUTES.DOCTORS, element: <Dashboard /> },
+
+  { path: ROUTES.DASHBOARD, element: <Dashboard /> },
+
 ];

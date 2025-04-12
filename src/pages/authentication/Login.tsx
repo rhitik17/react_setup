@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useTokenStore, {
+import  {
   useEmailStore,
   useUserStore,
 } from "../../stores/tokenStore";
@@ -30,7 +30,6 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
-  const { setToken } = useTokenStore();
   const { setUserProfile } = useUserStore();
 
   useEffect(() => {
@@ -90,7 +89,6 @@ const Login = () => {
 
       if (response) {
         toast.success("login successfully");
-        setToken(response.token);
         setUserProfile(response);
         navigate("/home");
       } else {

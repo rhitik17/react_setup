@@ -11,19 +11,6 @@ import {
   Stepper,
   Text,
 } from "@mantine/core";
-import {
-  IconBrain,
-  IconBuilding,
-  IconCalendar,
-  IconCheck,
-  IconClock,
-  IconHeart,
-  IconSchool,
-  IconStarFilled,
-  IconStethoscope,
-  IconUserCheck,
-  IconVirus,
-} from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
 import {
   APIGetDoctorsBySpecialization,
@@ -35,6 +22,7 @@ import CardSkeleton from "../../components/common/skeleton/CardSkeleton";
 import { useUserStore } from "../../stores/tokenStore";
 import { APICreateconsultation } from "../../api/consultation";
 import { toast } from "react-toastify";
+import { Icons } from "../../assets/icons";
 
 const diseaseOptions = [
   "itching",
@@ -189,7 +177,7 @@ const PredictionPage = () => {
       patient_gender: "Male",
       message: "Hello",
       disease_name: "Test Disease",
-      consultation_date: "2024-05-22",
+      consultation_date: "2024-05-18",
     };
 
     try {
@@ -258,7 +246,7 @@ const PredictionPage = () => {
       <Stepper active={active} onStepClick={setActive}>
         <Stepper.Step
           label="Prediction"
-          icon={<IconBrain size={24} />}
+          icon={<Icons.Brain size={24} />}
           description="Predict disease"
         >
           <div className="flex w-full py-8">
@@ -269,7 +257,7 @@ const PredictionPage = () => {
             >
               <div className="bg-purple-50 p-6 rounded-lg flex items-center w-full justify-center space-x-4">
                 <div className="bg-primary-100 rounded-full">
-                  <IconBrain className="w-12 h-12 text-primary-600" />
+                  <Icons.Brain className="w-12 h-12 text-primary-600" />
                 </div>
 
                 <div className="text-center">
@@ -312,7 +300,7 @@ const PredictionPage = () => {
                     clearable
                     leftSection={
                       selectedDiseases.length > 0 ? (
-                        <IconBrain className="text-primary-500 w-6 h-6" />
+                        <Icons.Brain className="text-primary-500 w-6 h-6" />
                       ) : null
                     }
                   />
@@ -341,7 +329,7 @@ const PredictionPage = () => {
                       <Skeleton height={50} circle className="mx-auto" />
                     ) : (
                       <div className="inline-flex p-3 bg-primary-50 rounded-full">
-                        <IconBrain className="w-8 h-8 text-primary-600" />
+                        <Icons.Brain className="w-8 h-8 text-primary-600" />
                       </div>
                     )}
 
@@ -440,11 +428,11 @@ const PredictionPage = () => {
         </Stepper.Step>
         <Stepper.Step
           label="Doctors"
-          icon={<IconStethoscope size={24} />}
+          icon={<Icons.Stethescope size={24} />}
           description="Get recommended doctors"
         >
           <div className="bg-purple-50 p-6 rounded-lg flex items-center w-full justify-center space-x-4">
-            <IconHeart className="w-12 h-12 text-purple-500" />
+            <Icons.Heart className="w-12 h-12 text-purple-500" />
             <div className=" text-center">
               <Text
                 component="h2"
@@ -487,7 +475,7 @@ const PredictionPage = () => {
                             </Text>
                             <div className="flex">
                               {[1, 2, 3, 4, 5].map((star) => (
-                                <IconStarFilled
+                                <Icons.StarFilled
                                   key={star}
                                   size={16}
                                   className="text-yellow-400"
@@ -503,7 +491,7 @@ const PredictionPage = () => {
 
                       <div className="space-y-3">
                         <div className="flex items-center space-x-2">
-                          <IconStethoscope
+                          <Icons.Stethescope
                             size={16}
                             className="text-gray-500"
                           />
@@ -516,7 +504,7 @@ const PredictionPage = () => {
                         </div>
 
                         <div className="flex items-center space-x-2">
-                          <IconBuilding size={16} className="text-gray-500" />
+                          <Icons.Office size={16} className="text-gray-500" />
                           <Text className="text-sm font-medium">Address:</Text>
                           <Text className="text-sm text-gray-600">
                             {doctor.address || "Unknown"}
@@ -524,7 +512,7 @@ const PredictionPage = () => {
                         </div>
 
                         <div className="flex items-center space-x-2">
-                          <IconSchool size={16} className="text-gray-500" />
+                          <Icons.School size={16} className="text-gray-500" />
                           <Text className="text-sm font-medium">
                             Qualification:
                           </Text>
@@ -533,7 +521,7 @@ const PredictionPage = () => {
                           </Text>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <IconCheck
+                          <Icons.Check
                             color="green"
                             size={16}
                             className="text-gray-500"
@@ -578,12 +566,12 @@ const PredictionPage = () => {
           </Box>
         </Stepper.Step>
         <Stepper.Step
-          icon={<IconBrain size={24} />}
+          icon={<Icons.Brain size={24} />}
           label="Final step"
           description="Get full access"
         >
           <div className="bg-green-50 p-6 rounded-lg flex items-center space-x-4">
-            <IconVirus className="w-12 h-12 text-green-500" />
+            <Icons.Virus className="w-12 h-12 text-green-500" />
             <div></div>
           </div>
         </Stepper.Step>

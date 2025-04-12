@@ -1,38 +1,27 @@
 import {
   Button,
-  Select,
-  TextInput,
   Box,
   Card,
   Title,
   Text,
   Stack,
   Group,
-  Avatar,
   Badge,
-  Drawer,
   Modal,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import {
   APIAcceptConsultation,
-  APICreateconsultation,
   APIGetAllConsultations,
-  APIGetAllConsultationsByPatient,
   APIGetAllDoctors,
 } from "../../api/consultation";
 import { useUserStore } from "../../stores/tokenStore";
-import {
-  IconStethoscope,
-  IconUser,
-  IconGenderMale,
-  IconGenderFemale,
-  IconGenderAgender,
-} from "@tabler/icons-react";
+
 import { useDisclosure } from "@mantine/hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { ApiSendMessage } from "../../api/chat";
 
 const ConsultationPage = () => {
   interface Doctor {
@@ -43,7 +32,7 @@ const ConsultationPage = () => {
 
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [consultations, setConsultations] = useState<any[]>([]);
-  const [selectedConsultation, setSelectedConsultation] = useState(null);
+  const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { userProfile } = useUserStore();
@@ -57,10 +46,9 @@ const ConsultationPage = () => {
       patient_gender: "Male",
       message: "Hello",
       disease_name: "Test Disease",
-      consultation_date: "2024-05-19",
+      consultation_date: "2024-05-16",
     },
     validate: {
-      //   doctor: (value) => (!value ? "Please select a doctor" : null),
       specialist: (value) => (!value ? "Please enter specialist type" : null),
       patient_gender: (value) => (!value ? "Please select gender" : null),
       disease_name: (value) => (!value ? "Please enter disease name" : null),
@@ -97,36 +85,26 @@ const ConsultationPage = () => {
     fetchDoctors();
   }, []);
 
-  const handleSubmit = async (values: typeof form.values) => {
-    setIsSubmitting(true);
+  const postInitialMessage = async (id: number) => {
     try {
-      const response = await APICreateconsultation(values);
-      console.log(response);
-      form.reset();
-      // Show success message or redirect
-    } catch (error) {
-      console.error("Error creating consultation:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const getGenderIcon = (gender: string) => {
-    switch (gender.toLowerCase()) {
-      case "male":
-        return <IconGenderMale size={20} />;
-      case "female":
-        return <IconGenderFemale size={20} />;
-      default:
-        return <IconGenderAgender size={20} />;
-    }
+      const payload = {
+        consultation: id,
+        message:
+          "Hello Sir/Madam! I am available Now, Are you ready to start the conversation?",
+      };
+      const res = await ApiSendMessage(payload);
+      navigate("/chats");
+    } catch (error) {}
   };
 
   const handleAccept = async (id: any) => {
     try {
       const res: any = await APIAcceptConsultation(id);
       toast.success("Request Accepted ");
-      navigate("/chats");
+
+      if (userProfile?.role === "Doctor") {
+        postInitialMessage(res.data.consultation.id);
+      }
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -139,81 +117,13 @@ const ConsultationPage = () => {
           Schedule a Consultation
         </Title>
 
-        {/* <Card withBorder shadow="sm" radius="md" p="xl">
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack gap="lg">
-              <Group justify="space-between" align="flex-start">
-                <TextInput
-                  label="Specialist Type"
-                  placeholder="e.g., Cardiologist, Neurologist"
-                  required
-                  leftSection={<IconStethoscope size={18} />}
-                  className="flex-1"
-                  {...form.getInputProps("specialist")}
-                />
-
-                <Select
-                  label="Patient Gender"
-                  placeholder="Select gender"
-                  required
-                  leftSection={<IconUser size={18} />}
-                  data={[
-                    { value: "Male", label: "Male" },
-                    { value: "Female", label: "Female" },
-                    { value: "Other", label: "Other" },
-                  ]}
-                  className="flex-1"
-                  {...form.getInputProps("patient_gender")}
-                />
-              </Group>
-
-              <Select
-                label="Select Doctor"
-                placeholder="Choose a doctor"
-                required
-                leftSection={<IconUser size={18} />}
-                data={doctors.map((doctor) => ({
-                  value: doctor.id,
-                  label: `${doctor.full_name} (${doctor.specialization})`,
-                }))}
-                {...form.getInputProps("doctor")}
-              />
-
-              <TextInput
-                label="Disease Name"
-                placeholder="Enter the disease name"
-                required
-                leftSection={<IconStethoscope size={18} />}
-                {...form.getInputProps("disease_name")}
-              />
-
-              <Box className="flex justify-end">
-                <Button
-                  type="submit"
-                  loading={isSubmitting}
-                  className="bg-primary-500 hover:bg-primary-700 transition-colors duration-200"
-                >
-                  Schedule Consultation
-                </Button>
-              </Box>
-            </Stack>
-          </form>
-        </Card> */}
-        {/* {
-          <Card withBorder shadow="sm" radius="md" p="xl">
-            <Title order={3} className="text-xl font-semibold mb-4">
-              Recent Consultations
-            </Title>
-          </Card>
-        )} */}
-
         {consultations.length > 0 && (
           <Card withBorder shadow="sm" radius="md" p="xl">
             <Title order={3} className="text-xl font-semibold mb-4">
               Recent Consultations
             </Title>
             <Stack gap="md">
-              {consultations.slice(0, 3).map((consultation) => (
+              {consultations.map((consultation) => (
                 <Card key={consultation.id} withBorder p="md">
                   <Group justify="space-between">
                     <div>
@@ -250,7 +160,7 @@ const ConsultationPage = () => {
         }
       >
         {selectedConsultation && (
-          <Stack spacing="xl">
+          <Stack>
             <Box className="border-b pb-4">
               <Text className="text-lg font-medium mb-2">
                 Patient Information
@@ -266,7 +176,7 @@ const ConsultationPage = () => {
                   <Text size="sm" c="dimmed">
                     Gender
                   </Text>
-                  <Group spacing="xs">
+                  <Group>
                     <Text>{selectedConsultation.patient_gender}</Text>
                   </Group>
                 </Box>
@@ -274,7 +184,7 @@ const ConsultationPage = () => {
                   <Text size="sm" c="dimmed">
                     Age
                   </Text>
-                  <Group spacing="xs">
+                  <Group>
                     <Text>{selectedConsultation.patient_age}</Text>
                   </Group>
                 </Box>
@@ -303,7 +213,7 @@ const ConsultationPage = () => {
               <Text className="text-lg font-medium mb-2">
                 Consultation Information
               </Text>
-              <Stack spacing="xs">
+              <Stack>
                 <Box>
                   <Text size="sm" c="dimmed">
                     Date

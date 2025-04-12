@@ -124,6 +124,8 @@ export default {
         900: "#103b37",
         1000: "#EFEFEF",
       },
+      primary_bg:"#f5f5f5",
+
 
       success: {
         default: "#00BA88",
