@@ -1,5 +1,14 @@
 // Icons.js
-import { FaAngleLeft, FaFacebook, FaLinkedin, FaUser } from "react-icons/fa";
+import {
+  FaAngleLeft,
+  FaFacebook,
+  FaFemale,
+  FaLinkedin,
+  FaMale,
+  FaTransgender,
+  FaUser,
+  FaVirus,
+} from "react-icons/fa";
 import { AiFillInfoCircle } from "react-icons/ai";
 import { MdOutlineContactPhone, MdOutlineFileDownload } from "react-icons/md";
 import { BiTask } from "react-icons/bi";
@@ -17,6 +26,17 @@ import {
   LuLoaderCircle,
   LuPrinter,
   LuCheck,
+  LuCalendar,
+  LuStethoscope,
+  LuMessageCircle,
+  LuHistory,
+  LuSettings,
+  LuLogOut,
+  LuBell,
+  LuBrain,
+  LuHeart,
+  LuStar,
+  LuSchool,
 } from "react-icons/lu";
 import { LuMail } from "react-icons/lu";
 import { MdOutlineFileUpload } from "react-icons/md";
@@ -63,4 +83,19 @@ export const Icons = {
   Check: HiCheck,
   WarningCircle: PiWarningCircleBold,
   FolderClosed: PiFolderThin,
+  Calender: LuCalendar,
+  Stethescope: LuStethoscope,
+  MessageCircle: LuMessageCircle,
+  History: LuHistory,
+  Settings: LuSettings,
+  LogOut: LuLogOut,
+  Bell: LuBell,
+  Brain: LuBrain,
+  Heart: LuHeart,
+  Virus: FaVirus,
+  Male: FaMale,
+  Female: FaFemale,
+  Agender: FaTransgender,
+  StarFilled: LuStar,
+  School: LuSchool,
 };

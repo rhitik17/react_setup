@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useTokenStore, {
+import  {
   useEmailStore,
   useUserStore,
 } from "../../stores/tokenStore";
@@ -23,7 +23,6 @@ const OtpVerify = () => {
   const [error, setError] = useState<string | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
 
-  const { setToken } = useTokenStore();
 
   useEffect(() => {
     if (resendTimer > 0) {
@@ -77,7 +76,6 @@ const OtpVerify = () => {
       const response = await otpVerify(payload);
 
       if (response?.results?.token) {
-        setToken(response.results.token);
         toast.success(response.message);
         setUserProfile(response.results);
       }

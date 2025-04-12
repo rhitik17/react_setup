@@ -21,3 +21,7 @@ export const APIAcceptConsultation = async (id: any) => {
   const response = await api.post(`doctor-consultations/${id}/accept/`);
   return response;
 };
+export const APIEndConsultation = async (id: any) => {
+  const response = await api.post(`chats/end-consultation/${id}/`);
+  return response;
+};

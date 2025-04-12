@@ -1,26 +1,26 @@
-import { Menu, Text } from "@mantine/core";
-import { IconBell, IconUser } from "@tabler/icons-react";
+import { Menu, Text, TextInput } from "@mantine/core";
 import { useUserStore } from "../../../stores/tokenStore";
+import { Icons } from "../../../assets/icons";
 
 const TopBar = () => {
-  const { userProfile, setUserProfile } = useUserStore();
+  const { userProfile, setUserProfile, removeUserProfile } = useUserStore();
 
   const handleLogout = () => {
-    setUserProfile(null);
+    removeUserProfile();
+
   };
   return (
-    <div className="flex justify-between bg-gray-300 items-center  text-black p-4 border-b shadow-lg">
-      <div className="flex items-center space-x-2">
-        <h1 className="text-2xl font-bold tracking-wide">
-          {userProfile?.role}
-        </h1>
-      </div>
+    <div className="h-20  flex  w-9/12 justify-between  items-center  text-black pr-8 fixed  left-3/12 top-0 ">
+      <TextInput
+        leftSection={<Icons.Search />}
+        className="rounded-xl outline-none"
+      ></TextInput>
 
       <div className="flex items-center space-x-4">
         <Menu>
           <Menu.Target>
             <button className="p-2 hover:bg-white/10 rounded-full transition-colors duration-200 relative">
-              <IconBell className="w-6 h-6" />
+              <Icons.Bell className="w-6 h-6" />
               <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"></span>
             </button>
           </Menu.Target>
@@ -42,7 +42,7 @@ const TopBar = () => {
           <Menu.Target>
             <div className="flex items-center space-x-3 p-2 hover:bg-white/10 rounded-full transition-colors duration-200 cursor-pointer">
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <IconUser className="w-5 h-5" />
+                <Icons.User className="w-5 h-5" />
               </div>
               <span className="font-medium">{userProfile?.name}</span>
             </div>

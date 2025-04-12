@@ -15,7 +15,7 @@ import {
   Tabs,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconSettings } from "@tabler/icons-react";
+import { Icons } from "../../assets/icons";
 
 interface FormValues {
   email: string;
@@ -152,13 +152,13 @@ const Register = () => {
           className="w-full space-y-4"
         >
           <Tabs.List className="">
-            <Tabs.Tab value="Patient" leftSection={<IconSettings size={12} />}>
+            <Tabs.Tab value="Patient" leftSection={<Icons.Settings size={12} />}>
               Patient
             </Tabs.Tab>
-            <Tabs.Tab value="Doctor" leftSection={<IconSettings size={12} />}>
+            <Tabs.Tab value="Doctor" leftSection={<Icons.Settings size={12} />}>
               Doctor
             </Tabs.Tab>
-            <Tabs.Tab value="Admin" leftSection={<IconSettings size={12} />}>
+            <Tabs.Tab value="Admin" leftSection={<Icons.Settings size={12} />}>
               Admin
             </Tabs.Tab>
           </Tabs.List>

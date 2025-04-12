@@ -1,30 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-interface TokenState {
-  token: string | null;
-  setToken: (token: string | null) => void;
-  language: string | null;
-  setLanguage: (token: string | null) => void;
-}
-
-const useTokenStore = create<TokenState>()(
-  persist(
-    (set) => ({
-      token: null,
-      language: null,
-
-      setToken: (token) => set({ token }),
-      setLanguage: (language) => set({ language }),
-    }),
-    {
-      name: "disease-token",
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
-export default useTokenStore;
-
 interface UserStore {
   userProfile: {
     id: string | null;
@@ -48,7 +24,10 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       userProfile: null,
       setUserProfile: (profile) => set({ userProfile: profile }),
-      removeUserProfile: () => set({ userProfile: null }),
+      removeUserProfile: () => {
+        set({ userProfile: null });
+        localStorage.removeItem("disease-user");
+      },
     }),
     {
       name: "disease-user", // Key for localStorage
