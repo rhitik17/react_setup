@@ -9,53 +9,57 @@ import { privateRoutes } from "./routes/privateRoutes"; // Define your private r
 import { publicRoutes } from "./routes/publicRoutes"; // Define your public routes
 import TopBar from "./components/common/layouts/TopBar";
 import Sidebar from "./components/common/layouts/Sidebar";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const { userProfile } = useUserStore();
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      {publicRoutes.map(({ path, element }) => (
-        <Route key={path} path={path} element={<>{element}</>} />
-      ))}
+    <>
+      <ToastContainer />
+      <Routes>
+        {/* Public Routes */}
+        {publicRoutes.map(({ path, element }) => (
+          <Route key={path} path={path} element={<>{element}</>} />
+        ))}
 
-      {/* Private Routes */}
-      <Route
-        path="*"
-        element={
-          userProfile?.token ? (
-            <Routes>
-              {privateRoutes.map(({ path, element }) => (
-                <Route
-                  key={path}
-                  path={path}
-                  element={
-                    <>
-                      <div className="h-screen flex flex-col">
-                        <div className="sticky top-0 z-50  ">
-                          <TopBar />
-                        </div>
-                        <div className="flex flex-1 overflow-hidden">
-                          <div className="sticky top-0 h-full">
-                            <Sidebar />
+        {/* Private Routes */}
+        <Route
+          path="*"
+          element={
+            userProfile?.token ? (
+              <Routes>
+                {privateRoutes.map(({ path, element }) => (
+                  <Route
+                    key={path}
+                    path={path}
+                    element={
+                      <>
+                        <div className="h-screen flex flex-col ">
+                          <div className="sticky top-0 z-50  ">
+                            <TopBar />
                           </div>
-                          <div className="flex-1 overflow-y-auto py-4">
-                            {element}
+                          <div className="flex  gap-6 overflow-hidden">
+                            <div className="sticky top-0 h-full">
+                              <Sidebar />
+                            </div>
+                            <div className=" overflow-y-auto h-full w-full py-4 ">
+                              {element}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </>
-                  }
-                />
-              ))}
-            </Routes>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-    </Routes>
+                      </>
+                    }
+                  />
+                ))}
+              </Routes>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
+    </>
   );
 }
 

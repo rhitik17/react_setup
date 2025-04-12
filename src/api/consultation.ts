@@ -1,7 +1,7 @@
 import api from "../services/api";
 
 export const APICreateconsultation = async (data: any) => {
-  const response = await api.post("doctor-consultations/", data);
+  const response = await api.post("consultations/", data);
   return response;
 };
 export const APIGetAllDoctors = async () => {
@@ -9,6 +9,15 @@ export const APIGetAllDoctors = async () => {
   return response;
 };
 export const APIGetAllConsultations = async () => {
-  const response = await api.get("consultations/");
+  const response = await api.get("doctor-consultations/");
+  return response;
+};
+export const APIGetAllConsultationsByPatient = async () => {
+  const response = await api.get("doctor-patients/");
+  return response;
+};
+
+export const APIAcceptConsultation = async (id: any) => {
+  const response = await api.post(`doctor-consultations/${id}/accept/`);
   return response;
 };

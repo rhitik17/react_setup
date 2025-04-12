@@ -11,7 +11,7 @@ import {
 
 const Sidebar = () => {
   return (
-    <div className=" text-black  bg-[#F5F5F5]  w-64 h-screen p-4">
+    <div className=" text-black shadow-lg border border-gray-300  w-64 h-screen p-4">
       <h2 className="text-xl font-bold mb-4">Navigation</h2>
       <ul>
         <li>
@@ -48,7 +48,7 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/chat"
+            to="/chats"
             className="flex items-center p-2 hover:bg-gray-700"
           >
             <IconMessageCircle className="mr-2" /> Chat

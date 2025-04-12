@@ -2,6 +2,8 @@ const ROUTES = {
   HOME: "/home",
   LOGIN: "/login",
   SIGNUP: "/register",
+  CHATS: "/chats",
+  SINGLECHAT: "/chat/:id",
   CONSULTATION: "/consultation",
   PREDICT: "/predict",
   FORGOTPASSWORD: "/forgot-password",

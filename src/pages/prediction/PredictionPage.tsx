@@ -1,7 +1,25 @@
-import { Box, Button, MultiSelect, Stack, Stepper, Text } from "@mantine/core";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Drawer,
+  MultiSelect,
+  Select,
+  Skeleton,
+  Stack,
+  Stepper,
+  Text,
+} from "@mantine/core";
 import {
   IconBrain,
+  IconBuilding,
+  IconCalendar,
+  IconCheck,
+  IconClock,
   IconHeart,
+  IconSchool,
+  IconStarFilled,
   IconStethoscope,
   IconUserCheck,
   IconVirus,
@@ -11,6 +29,12 @@ import {
   APIGetDoctorsBySpecialization,
   APIPredictDisease,
 } from "../../api/prediction";
+
+import CardSkeleton from "../../components/common/skeleton/CardSkeleton";
+
+import { useUserStore } from "../../stores/tokenStore";
+import { APICreateconsultation } from "../../api/consultation";
+import { toast } from "react-toastify";
 
 const diseaseOptions = [
   "itching",
@@ -147,11 +171,44 @@ const diseaseOptions = [
   "yellow_crust_ooze",
 ];
 const PredictionPage = () => {
+  const { userProfile } = useUserStore();
+  console.log(userProfile, "userProfile");
+  //   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  //   const [selectedSpecialist, setSelectedSpecialist] = useState<string | null>(
+  //     null
+  //   );
+
+  const handleBookAppointment = async (
+    doctorId: string,
+    specialization: string
+  ) => {
+    const appointmentData = {
+      doctor_id: doctorId,
+      patient: userProfile?.id,
+      specialist: specialization,
+      patient_gender: "Male",
+      message: "Hello",
+      disease_name: "Test Disease",
+      consultation_date: "2024-05-22",
+    };
+
+    try {
+      const response = await APICreateconsultation(appointmentData);
+
+      console.log(response);
+      if (response) {
+        toast.success("Appointment booked successfully");
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+    }
+  };
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]);
 
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [active, setActive] = useState(1);
+
+  const [active, setActive] = useState(0);
   const nextStep = () =>
     setActive((current) => (current < 3 ? current + 1 : current));
   const prevStep = () =>
@@ -182,153 +239,338 @@ const PredictionPage = () => {
 
     console.log("Predicting for:", payload);
     try {
+      setLoading(true);
+      // Adding a 3-second delay before making the API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const res = await APIPredictDisease(payload);
       setResponse(res.data);
       console.log("Prediction result:", res.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error predicting disease:", error);
+      setLoading(false);
     }
   };
-  console.log(response);
+  console.log(doctors, "doctors");
 
   return (
-    <div className="p-8 space-y-4">
+    <div className="p-8 space-y-2 ">
       <Stepper active={active} onStepClick={setActive}>
         <Stepper.Step
           label="Prediction"
           icon={<IconBrain size={24} />}
           description="Predict disease"
         >
-          <Box className="space-y-6 py-8  rounded-xl ">
-            <div className="bg-blue-50 p-6 rounded-lg flex items-center space-x-4">
-              <IconBrain className="w-12 h-12 text-primary-500" />
-              <div>
-                <Text className="font-semibold">AI Analysis</Text>
-                <Text className="text-sm text-gray-600">
-                  Advanced algorithms analyze your symptoms
-                </Text>
+          <div className="flex w-full py-8">
+            <div
+              className={`transition-all duration-300 ${
+                response ? "w-2/3 pr-4" : "w-full"
+              }`}
+            >
+              <div className="bg-purple-50 p-6 rounded-lg flex items-center w-full justify-center space-x-4">
+                <div className="bg-primary-100 rounded-full">
+                  <IconBrain className="w-12 h-12 text-primary-600" />
+                </div>
+
+                <div className="text-center">
+                  <Text
+                    component="h2"
+                    className="text-xl font-bold bg-gradient-to-r from-primary-500 to-purple-600 bg-clip-text text-transparent"
+                  >
+                    AI-Powered Disease Prediction
+                  </Text>
+                  <Text className="text-gray-600">
+                    Using advanced machine learning to analyze your symptoms
+                  </Text>
+                </div>
+              </div>
+
+              <div className="bg-white p-8 rounded-xl shadow-lg space-y-6">
+                <div className="text-center max-w-2xl mx-auto">
+                  <Text className="text-2xl font-bold text-gray-800 mb-3">
+                    What symptoms are you experiencing?
+                  </Text>
+                  <Text className="text-gray-600 text-lg">
+                    Select all symptoms that apply for the most accurate
+                    prediction
+                  </Text>
+                </div>
+
+                <div className="flex flex-col gap-6">
+                  <MultiSelect
+                    label={
+                      <Text className="text-lg font-medium text-gray-700 mb-2">
+                        Your Symptoms
+                      </Text>
+                    }
+                    className="w-full"
+                    placeholder="Type to search symptoms..."
+                    data={diseaseOptions}
+                    value={selectedDiseases}
+                    onChange={setSelectedDiseases}
+                    searchable
+                    clearable
+                    leftSection={
+                      selectedDiseases.length > 0 ? (
+                        <IconBrain className="text-primary-500 w-6 h-6" />
+                      ) : null
+                    }
+                  />
+
+                  <Button
+                    className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 
+                               text-white font-medium rounded-xl shadow-xl hover:shadow-2xl 
+                               transform hover:scale-102 transition-all duration-300"
+                    onClick={handlePredict}
+                    loading={loading}
+                  >
+                    Analyze Symptoms
+                  </Button>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8">
-              <Text className="text-lg font-medium mb-2">
-                Select Your Symptoms
-              </Text>
-              <Text className="text-gray-600 mb-4">
-                Choose the symptoms you're experiencing for an accurate
-                prediction
-              </Text>
-              <Box className="flex items-end gap-4 w-full ">
-                <MultiSelect
-                  label="Symptoms"
-                  className="w-full"
-                  placeholder="Start typing your symptoms..."
-                  data={diseaseOptions}
-                  value={selectedDiseases}
-                  onChange={setSelectedDiseases}
-                  searchable
-                  clearable
-                  leftSection={
-                    selectedDiseases.length > 0 ? (
-                      <IconBrain className="text-primary-500" />
-                    ) : null
-                  }
-                />
-                <Button
-                  className="bg-primary-500 hover:bg-slate-600 transition-all w-1/6  shadow-lg transform hover:scale-105"
-                  onClick={() => {
-                    handlePredict();
-                  }}
-                >
-                  Predict
-                </Button>
-              </Box>
-            </div>
-
-            <Text className="text-sm text-gray-500 text-center mt-4">
-              Note: This tool is for reference only. Always consult healthcare
-              professionals for medical advice.
-            </Text>
             {response && (
-              <Box className="p-6 bg-white rounded-lg shadow-md space-y-4 max-w-xl mx-auto hover:shadow-lg transition-shadow duration-300">
-                <div className="text-center transform hover:scale-105 transition-transform duration-300">
-                  <Text size="xl" fw={700} className="text-primary-500 mb-2">
-                    Predicted Disease
-                  </Text>
-                  <Text
-                    size="lg"
-                    fw={500}
-                    className="hover:text-primary-600 cursor-pointer"
-                  >
-                    {response?.disease}
-                  </Text>
-                </div>
+              <div className="w-1/3 transition-all duration-300 transform translate-x-0">
+                <Card
+                  withBorder
+                  className="bg-white rounded-lg shadow-md p-6 h-full hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="text-center space-y-4">
+                    {loading ? (
+                      <Skeleton height={50} circle className="mx-auto" />
+                    ) : (
+                      <div className="inline-flex p-3 bg-primary-50 rounded-full">
+                        <IconBrain className="w-8 h-8 text-primary-600" />
+                      </div>
+                    )}
 
-                <div className="border-t border-b py-4 my-4 hover:bg-gray-50 transition-colors duration-300">
-                  <Text size="lg" fw={600} className="text-gray-700 mb-2">
-                    Recommended Specialization
-                  </Text>
-                  <Text size="md" className="text-gray-600 hover:text-gray-900">
-                    {response?.recommended_specialization}
-                  </Text>
-                </div>
+                    <div className="space-y-1">
+                      {loading ? (
+                        <>
+                          <Skeleton
+                            height={24}
+                            width="60%"
+                            className="mx-auto mb-2"
+                          />
+                          <Skeleton
+                            height={28}
+                            width="80%"
+                            className="mx-auto"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <Text className="text-lg font-bold text-gray-800">
+                            Analysis Results
+                          </Text>
+                          <Text className="text-xl font-bold text-primary-600">
+                            {response?.disease}
+                          </Text>
+                        </>
+                      )}
+                    </div>
 
-                <div className="space-y-4">
-                  <Button
-                    className="bg-primary-500 w-full hover:bg-primary-600 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
-                    size="lg"
-                    onClick={() => {
-                      fetchDoctors();
-                      nextStep();
-                    }}
-                  >
-                    Get Recommended Doctors
-                  </Button>
+                    <div className="border-t border-gray-100 py-4">
+                      {loading ? (
+                        <>
+                          <Skeleton
+                            height={20}
+                            width="40%"
+                            className="mx-auto mb-2"
+                          />
+                          <Skeleton
+                            height={24}
+                            width="70%"
+                            className="mx-auto"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <Text className="text-sm font-medium text-gray-600">
+                            Recommended Specialist
+                          </Text>
+                          <Text className="text-base text-primary-600 font-medium">
+                            {response?.recommended_specialization}
+                          </Text>
+                        </>
+                      )}
+                    </div>
 
-                  <Button
-                    variant="outline"
-                    className="w-full hover:bg-gray-50 transition-colors duration-300"
-                    size="lg"
-                    onClick={() => window.print()}
-                  >
-                    Save Results
-                  </Button>
-                </div>
-              </Box>
+                    <div className="flex flex-col gap-6">
+                      {loading ? (
+                        <>
+                          <Skeleton height={36} className="w-full" />
+                          <Skeleton height={36} className="w-full" />
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+                                     text-white py-2 text-sm font-medium rounded-lg shadow hover:shadow-md
+                                     transition-all duration-200"
+                            onClick={() => {
+                              fetchDoctors();
+                              nextStep();
+                            }}
+                          >
+                            Get Recommended Doctors
+                          </Button>
+
+                          <Button
+                            variant="outline"
+                            className="border border-gray-200 hover:bg-gray-50 text-gray-700
+                                     py-2 text-sm font-medium rounded-lg transition-colors duration-200"
+                            onClick={() => window.print()}
+                          >
+                            Save Report
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              </div>
             )}
-          </Box>
+          </div>
+          <Text className="text-sm text-gray-500 text-center italic mt-4">
+            Note: This AI prediction tool is for reference only. Please consult
+            with healthcare professionals for medical diagnosis.
+          </Text>
         </Stepper.Step>
         <Stepper.Step
           label="Doctors"
           icon={<IconStethoscope size={24} />}
           description="Get recommended doctors"
         >
-          <div className="bg-purple-50 p-6 rounded-lg flex items-center space-x-4">
+          <div className="bg-purple-50 p-6 rounded-lg flex items-center w-full justify-center space-x-4">
             <IconHeart className="w-12 h-12 text-purple-500" />
-            <div>
-              <Text className="font-semibold">Health Insights</Text>
-              <Text className="text-sm text-gray-600">
-                Get detailed health risk assessments
+            <div className=" text-center">
+              <Text
+                component="h2"
+                className="text-xl font-bold bg-gradient-to-r from-primary-500 to-purple-600 bg-clip-text text-transparent"
+              >
+                Recommended Healthcare Specialists
               </Text>
+              <Text className="text-gray-600 ">
+                Expertly matched doctors based on your health profile
+              </Text>
+              {/* <div className="w-24 h-1 bg-primary-500 mx-auto mt-4 rounded-full"></div> */}
             </div>
           </div>
-          <Box className="space-y-4">
-            {loading && <Text>Loading doctors...</Text>}
+          <Box className="space-y-4 py-4">
+            {loading && <CardSkeleton />}
 
-            {/* Render doctors list */}
-            {!loading && doctors.length > 0 && (
-              <Stack>
-                {doctors.map((doctor: any) => (
-                  <Box key={doctor.id} p="md" className="border rounded">
-                    <Text size="lg" fw={500}>
-                      {doctor.full_name}
-                    </Text>
-                    <Text size="sm" c="dimmed">
-                      {doctor.experience_years}
-                    </Text>
+            {!loading && doctors?.length > 0 && (
+              <Box className="grid grid-cols-3 gap-4">
+                {doctors?.map((doctor: any) => (
+                  <Box
+                    key={doctor?.id}
+                    p="md"
+                    className="border rounded-lg justify-between w-full space-y-6 items-end"
+                  >
+                    <div className="flex flex-col space-y-2 flex-1">
+                      <div className="flex items-center space-x-4">
+                        <Avatar
+                          src={doctor.image || "https://via.placeholder.com/60"}
+                          alt={doctor.full_name}
+                          size="lg"
+                          radius="xl"
+                        />
+                        <div>
+                          <Text className="text-lg font-semibold">
+                            {doctor.full_name}
+                          </Text>
+                          <div className="flex items-center space-x-1">
+                            <Text className="text-sm text-gray-600">
+                              Rating: {doctor.rating || "5.0"}
+                            </Text>
+                            <div className="flex">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <IconStarFilled
+                                  key={star}
+                                  size={16}
+                                  className="text-yellow-400"
+                                />
+                              ))}
+                            </div>
+                            <Text className="text-sm text-gray-500">
+                              ({doctor.reviews || "70"})
+                            </Text>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <IconStethoscope
+                            size={16}
+                            className="text-gray-500"
+                          />
+                          <Text className="text-sm font-medium">
+                            Specialization:
+                          </Text>
+                          <Text className="text-sm text-gray-600">
+                            {doctor.specialization}
+                          </Text>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <IconBuilding size={16} className="text-gray-500" />
+                          <Text className="text-sm font-medium">Address:</Text>
+                          <Text className="text-sm text-gray-600">
+                            {doctor.address || "Unknown"}
+                          </Text>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <IconSchool size={16} className="text-gray-500" />
+                          <Text className="text-sm font-medium">
+                            Qualification:
+                          </Text>
+                          <Text className="text-sm text-gray-600">
+                            {doctor.qualification || "Unknown"}
+                          </Text>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <IconCheck
+                            color="green"
+                            size={16}
+                            className="text-gray-500"
+                          />
+                          <Text className="text-sm font-medium">
+                            Availability:
+                          </Text>
+                          <Text className="text-sm text-gray-600">
+                            {doctor.is_available
+                              ? "Available"
+                              : "Not Available"}
+                          </Text>
+                        </div>
+                      </div>
+                    </div>
+                    <Box className="flex justify-between">
+                      <Button
+                        onClick={() =>
+                          handleBookAppointment(
+                            doctor?.id,
+                            doctor?.specialization
+                          )
+                        }
+                        className="bg-primary-500 hover:bg-slate-600 transition-all   shadow-lg transform hover:scale-105"
+                      >
+                        Book Appointment
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className=" transition-all   shadow-lg transform hover:scale-105"
+                      >
+                        Write a review
+                      </Button>
+                    </Box>
                   </Box>
                 ))}
-              </Stack>
+              </Box>
             )}
 
             {/* If no doctors are found */}
@@ -342,12 +584,7 @@ const PredictionPage = () => {
         >
           <div className="bg-green-50 p-6 rounded-lg flex items-center space-x-4">
             <IconVirus className="w-12 h-12 text-green-500" />
-            <div>
-              <Text className="font-semibold">Expert Guidance</Text>
-              <Text className="text-sm text-gray-600">
-                Connect with specialized doctors
-              </Text>
-            </div>
+            <div></div>
           </div>
         </Stepper.Step>
         <Stepper.Completed>

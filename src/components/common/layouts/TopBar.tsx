@@ -9,7 +9,7 @@ const TopBar = () => {
     setUserProfile(null);
   };
   return (
-    <div className="flex justify-between items-center  text-black p-4 border-b shadow-lg">
+    <div className="flex justify-between bg-gray-300 items-center  text-black p-4 border-b shadow-lg">
       <div className="flex items-center space-x-2">
         <h1 className="text-2xl font-bold tracking-wide">
           {userProfile?.role}
