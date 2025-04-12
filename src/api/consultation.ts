@@ -13,7 +13,7 @@ export const APIGetAllConsultations = async () => {
   return response;
 };
 export const APIGetAllConsultationsByPatient = async () => {
-  const response = await api.get("doctor-patients/");
+  const response = await api.get("consultations/");
   return response;
 };
 

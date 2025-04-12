@@ -24,8 +24,6 @@ import {
 } from "../../api/consultation";
 import { useUserStore } from "../../stores/tokenStore";
 import {
-  IconStethoscope,
-  IconUser,
   IconGenderMale,
   IconGenderFemale,
   IconGenderAgender,
@@ -47,6 +45,8 @@ const ConsultationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { userProfile } = useUserStore();
+
+  const isPatient = userProfile?.role === "Patient";
   const navigate = useNavigate();
 
   const form = useForm({
@@ -60,7 +60,6 @@ const ConsultationPage = () => {
       consultation_date: "2024-05-19",
     },
     validate: {
-      //   doctor: (value) => (!value ? "Please select a doctor" : null),
       specialist: (value) => (!value ? "Please enter specialist type" : null),
       patient_gender: (value) => (!value ? "Please select gender" : null),
       disease_name: (value) => (!value ? "Please enter disease name" : null),
@@ -85,8 +84,13 @@ const ConsultationPage = () => {
 
   const fetchConsultations = async () => {
     try {
-      const response = await APIGetAllConsultations();
-      setConsultations(response.data.results);
+      if (userProfile?.role === "Doctor") {
+        const response = await APIGetAllConsultations();
+        setConsultations(response.data.results);
+      } else {
+        const response = await APIGetAllConsultationsByPatient();
+        setConsultations(response.data.results);
+      }
     } catch (error) {
       console.error("Error fetching consultations:", error);
     }
@@ -139,81 +143,13 @@ const ConsultationPage = () => {
           Schedule a Consultation
         </Title>
 
-        {/* <Card withBorder shadow="sm" radius="md" p="xl">
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack gap="lg">
-              <Group justify="space-between" align="flex-start">
-                <TextInput
-                  label="Specialist Type"
-                  placeholder="e.g., Cardiologist, Neurologist"
-                  required
-                  leftSection={<IconStethoscope size={18} />}
-                  className="flex-1"
-                  {...form.getInputProps("specialist")}
-                />
-
-                <Select
-                  label="Patient Gender"
-                  placeholder="Select gender"
-                  required
-                  leftSection={<IconUser size={18} />}
-                  data={[
-                    { value: "Male", label: "Male" },
-                    { value: "Female", label: "Female" },
-                    { value: "Other", label: "Other" },
-                  ]}
-                  className="flex-1"
-                  {...form.getInputProps("patient_gender")}
-                />
-              </Group>
-
-              <Select
-                label="Select Doctor"
-                placeholder="Choose a doctor"
-                required
-                leftSection={<IconUser size={18} />}
-                data={doctors.map((doctor) => ({
-                  value: doctor.id,
-                  label: `${doctor.full_name} (${doctor.specialization})`,
-                }))}
-                {...form.getInputProps("doctor")}
-              />
-
-              <TextInput
-                label="Disease Name"
-                placeholder="Enter the disease name"
-                required
-                leftSection={<IconStethoscope size={18} />}
-                {...form.getInputProps("disease_name")}
-              />
-
-              <Box className="flex justify-end">
-                <Button
-                  type="submit"
-                  loading={isSubmitting}
-                  className="bg-primary-500 hover:bg-primary-700 transition-colors duration-200"
-                >
-                  Schedule Consultation
-                </Button>
-              </Box>
-            </Stack>
-          </form>
-        </Card> */}
-        {/* {
-          <Card withBorder shadow="sm" radius="md" p="xl">
-            <Title order={3} className="text-xl font-semibold mb-4">
-              Recent Consultations
-            </Title>
-          </Card>
-        )} */}
-
         {consultations.length > 0 && (
           <Card withBorder shadow="sm" radius="md" p="xl">
             <Title order={3} className="text-xl font-semibold mb-4">
               Recent Consultations
             </Title>
             <Stack gap="md">
-              {consultations.slice(0, 3).map((consultation) => (
+              {consultations.map((consultation) => (
                 <Card key={consultation.id} withBorder p="md">
                   <Group justify="space-between">
                     <div>
@@ -222,17 +158,28 @@ const ConsultationPage = () => {
                         {consultation.specialist}
                       </Text>
                     </div>
-                    <Badge
-                      color="blue"
-                      variant="light"
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setSelectedConsultation(consultation);
-                        open();
-                      }}
-                    >
-                      View Details
-                    </Badge>
+                    <Box className="flex gap-4">
+                      <Badge
+                        color="blue"
+                        variant="light"
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setSelectedConsultation(consultation);
+                          open();
+                        }}
+                      >
+                        View Details
+                      </Badge>
+                      {isPatient && (
+                        <Badge
+                          color="red"
+                          variant="light"
+                          className="cursor-pointer"
+                        >
+                          End Consultation
+                        </Badge>
+                      )}
+                    </Box>
                   </Group>
                 </Card>
               ))}
