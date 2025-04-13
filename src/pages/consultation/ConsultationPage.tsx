@@ -13,11 +13,12 @@ import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import {
   APIAcceptConsultation,
+  APIEndConsultation,
   APIGetAllConsultations,
+  APIGetAllConsultationsByPatient,
   APIGetAllDoctors,
 } from "../../api/consultation";
 import { useUserStore } from "../../stores/tokenStore";
-
 import { useDisclosure } from "@mantine/hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +37,8 @@ const ConsultationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { userProfile } = useUserStore();
+
+  const isPatient = userProfile?.role === "Patient";
   const navigate = useNavigate();
 
   const form = useForm({
@@ -73,8 +76,13 @@ const ConsultationPage = () => {
 
   const fetchConsultations = async () => {
     try {
-      const response = await APIGetAllConsultations();
-      setConsultations(response.data.results);
+      if (userProfile?.role === "Doctor") {
+        const response = await APIGetAllConsultations();
+        setConsultations(response.data.results);
+      } else {
+        const response = await APIGetAllConsultationsByPatient();
+        setConsultations(response.data.results);
+      }
     } catch (error) {
       console.error("Error fetching consultations:", error);
     }
@@ -105,6 +113,15 @@ const ConsultationPage = () => {
       if (userProfile?.role === "Doctor") {
         postInitialMessage(res.data.consultation.id);
       }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+  const endConsultation = async (id: any) => {
+    try {
+      const res: any = await APIEndConsultation(id);
+      toast.success("Consultation Ended ");
+      fetchConsultations();
     } catch (error: any) {
       toast.error(error.message);
     }

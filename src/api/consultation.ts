@@ -13,11 +13,15 @@ export const APIGetAllConsultations = async () => {
   return response;
 };
 export const APIGetAllConsultationsByPatient = async () => {
-  const response = await api.get("doctor-patients/");
+  const response = await api.get("consultations/");
   return response;
 };
 
 export const APIAcceptConsultation = async (id: any) => {
   const response = await api.post(`doctor-consultations/${id}/accept/`);
+  return response;
+};
+export const APIEndConsultation = async (id: any) => {
+  const response = await api.post(`chats/end-consultation/${id}/`);
   return response;
 };
