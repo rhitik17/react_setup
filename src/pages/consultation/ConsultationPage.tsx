@@ -8,6 +8,9 @@ import {
   Group,
   Badge,
   Modal,
+  Tabs,
+  TextInput,
+  Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
@@ -22,7 +25,7 @@ import { useUserStore } from "../../stores/tokenStore";
 import { useDisclosure } from "@mantine/hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { ApiSendMessage } from "../../api/chat";
+import { ApiRateDoctor, ApiSendFeedback, ApiSendMessage } from "../../api/chat";
 
 const ConsultationPage = () => {
   interface Doctor {
@@ -40,6 +43,32 @@ const ConsultationPage = () => {
 
   const isPatient = userProfile?.role === "Patient";
   const navigate = useNavigate();
+
+  const [rating, setRating] = useState<any>("");
+  const [feedback, setFeedback] = useState<any>("");
+
+  console.log(selectedConsultation, "selected");
+
+  const handleRateDoctor = async () => {
+    if (!selectedConsultation?.id) return;
+    try {
+      const payload = {
+        doctor: selectedConsultation?.doctor,
+        feedback: feedback,
+      };
+      // Execute both API calls in parallel using Promise.all
+      const [ratingResponse, feedbackResponse] = await Promise.all([
+        ApiRateDoctor(selectedConsultation?.id, rating),
+        ApiSendFeedback(payload),
+      ]);
+      console.log(ratingResponse, feedbackResponse, "responses");
+      toast.success("Doctor rated successfully");
+      toast.success("Feedback sent successfully");
+    } catch (error) {
+      console.error("Error rating doctor:", error);
+      toast.error("Failed to rate doctor");
+    }
+  };
 
   const form = useForm({
     initialValues: {
@@ -59,6 +88,8 @@ const ConsultationPage = () => {
   });
 
   const [opened, { open, close }] = useDisclosure(false);
+  const [openedRate, { open: openRate, close: closeRate }] =
+    useDisclosure(false);
   const fetchDoctors = async () => {
     try {
       const response = await APIGetAllDoctors();
@@ -127,6 +158,8 @@ const ConsultationPage = () => {
     }
   };
 
+  const [activeTab, setActiveTab] = useState<string | null>("first");
+
   return (
     <Box className="p-8 ">
       <Stack gap="xl">
@@ -134,49 +167,152 @@ const ConsultationPage = () => {
           Schedule a Consultation
         </Title>
 
-        {consultations.length > 0 && (
-          <Card withBorder shadow="sm" radius="md" p="xl">
-            <Title order={3} className="text-xl font-semibold mb-4">
-              Recent Consultations
-            </Title>
-            <Stack gap="md">
-              {consultations.map((consultation) => (
-                <Card key={consultation.id} withBorder p="md">
-                  <Group justify="space-between">
-                    <div>
-                      <Text fw={500}>{consultation.disease_name}</Text>
-                      <Text size="sm" c="dimmed">
-                        {consultation.specialist}
-                      </Text>
-                    </div>
-                    <Box className="flex gap-4">
-                      <Badge
-                        color="blue"
-                        variant="light"
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setSelectedConsultation(consultation);
-                          open();
-                        }}
-                      >
-                        View Details
-                      </Badge>
+        <Tabs value={activeTab} onChange={setActiveTab}>
+          <Tabs.List>
+            <Tabs.Tab value="active">Active</Tabs.Tab>
+            <Tabs.Tab value="requested">Requested</Tabs.Tab>
+            <Tabs.Tab value="completed">Completed</Tabs.Tab>
+          </Tabs.List>
 
-                      <Badge
-                        color="red"
-                        variant="light"
-                        className="cursor-pointer"
-                        onClick={() => endConsultation(consultation.id)}
-                      >
-                        End Consultation
-                      </Badge>
-                    </Box>
-                  </Group>
-                </Card>
-              ))}
-            </Stack>
-          </Card>
-        )}
+          <Tabs.Panel value="active">
+            {consultations.length > 0 && (
+              <Card withBorder shadow="sm" radius="md" p="xl">
+                <Stack gap="md">
+                  {consultations
+                    .filter((consultation) => consultation.status === "active")
+                    .map((consultation) => (
+                      <Card key={consultation.id} withBorder p="md">
+                        <Group justify="space-between">
+                          <div>
+                            <Text fw={500}>{consultation.disease_name}</Text>
+                            <Text size="sm" c="dimmed">
+                              {consultation.specialist}
+                            </Text>
+                          </div>
+                          <Box className="flex gap-4">
+                            <Badge
+                              color="blue"
+                              variant="light"
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setSelectedConsultation(consultation);
+                                open();
+                              }}
+                            >
+                              View Details
+                            </Badge>
+
+                            <Badge
+                              color="red"
+                              variant="light"
+                              className="cursor-pointer"
+                              onClick={() => endConsultation(consultation.id)}
+                            >
+                              End Consultation
+                            </Badge>
+                          </Box>
+                        </Group>
+                      </Card>
+                    ))}
+                </Stack>
+              </Card>
+            )}
+          </Tabs.Panel>
+          <Tabs.Panel value="requested">
+            {consultations.length > 0 && (
+              <Card withBorder shadow="sm" radius="md" p="xl">
+                <Stack gap="md">
+                  {consultations
+                    .filter(
+                      (consultation) => consultation.status === "requested"
+                    )
+                    .map((consultation) => (
+                      <Card key={consultation.id} withBorder p="md">
+                        <Group justify="space-between">
+                          <div>
+                            <Text fw={500}>{consultation.disease_name}</Text>
+                            <Text size="sm" c="dimmed">
+                              {consultation.specialist}
+                            </Text>
+                          </div>
+                          <Box className="flex gap-4">
+                            <Badge
+                              color="blue"
+                              variant="light"
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setSelectedConsultation(consultation);
+                                open();
+                              }}
+                            >
+                              View Details
+                            </Badge>
+
+                            <Badge
+                              color="red"
+                              variant="light"
+                              className="cursor-pointer"
+                              onClick={() => endConsultation(consultation.id)}
+                            >
+                              End Consultation
+                            </Badge>
+                          </Box>
+                        </Group>
+                      </Card>
+                    ))}
+                </Stack>
+              </Card>
+            )}
+          </Tabs.Panel>
+          <Tabs.Panel value="completed">
+            {consultations.length > 0 && (
+              <Card withBorder shadow="sm" radius="md" p="xl">
+                <Stack gap="md">
+                  {consultations
+                    .filter(
+                      (consultation) => consultation.status === "completed"
+                    )
+                    .map((consultation) => (
+                      <Card key={consultation.id} withBorder p="md">
+                        <Group justify="space-between">
+                          <div>
+                            <Text fw={500}>{consultation.disease_name}</Text>
+                            <Text size="sm" c="dimmed">
+                              {consultation.specialist}
+                            </Text>
+                          </div>
+                          <Box className="flex gap-4">
+                            <Badge
+                              color="blue"
+                              variant="light"
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setSelectedConsultation(consultation);
+                                open();
+                              }}
+                            >
+                              View Details
+                            </Badge>
+                            <Badge
+                              color="blue"
+                              variant="light"
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setSelectedConsultation(consultation);
+                                openRate();
+                              }}
+                            >
+                              Rate Doctor
+                            </Badge>
+                          </Box>
+                        </Group>
+                      </Card>
+                    ))}
+                </Stack>
+              </Card>
+            )}
+          </Tabs.Panel>
+        </Tabs>
       </Stack>
       <Modal
         opened={opened}
@@ -271,6 +407,54 @@ const ConsultationPage = () => {
             </Box>
           </Stack>
         )}
+      </Modal>
+      <Modal
+        opened={openedRate}
+        onClose={closeRate}
+        centered
+        size="70%"
+        title={<Text className="font-semibold text-2xl">Rate Doctor</Text>}
+      >
+        <Stack gap="md">
+          <Box>
+            <Text size="sm" mb={4}>
+              Rating (1-5)
+            </Text>
+            <TextInput
+              type="number"
+              value={rating}
+              min={1}
+              max={5}
+              placeholder="Enter rating from 1 to 5"
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                if (value >= 1 && value <= 5) {
+                  setRating(value);
+                }
+              }}
+            />
+          </Box>
+
+          <Box>
+            <Text size="sm" mb={4}>
+              Feedback
+            </Text>
+            <Textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="Please provide your feedback about the doctor"
+              minRows={4}
+              className="w-full"
+            />
+          </Box>
+
+          <Button
+            className="bg-primary-500 hover:bg-primary-600 text-white w-full mt-4"
+            onClick={handleRateDoctor}
+          >
+            Submit Rating
+          </Button>
+        </Stack>
       </Modal>
     </Box>
   );

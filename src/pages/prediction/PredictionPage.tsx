@@ -168,16 +168,19 @@ const PredictionPage = () => {
 
   const handleBookAppointment = async (
     doctorId: string,
+
     specialization: string
   ) => {
     const appointmentData = {
       doctor_id: doctorId,
+
       patient: userProfile?.id,
+
       specialist: specialization,
       patient_gender: "Male",
       message: "Hello",
-      disease_name: "Test Disease",
-      consultation_date: "2024-05-18",
+      disease_name: "new Disease",
+      consultation_date: "2024-05-30",
     };
 
     try {
@@ -542,6 +545,7 @@ const PredictionPage = () => {
                         onClick={() =>
                           handleBookAppointment(
                             doctor?.id,
+
                             doctor?.specialization
                           )
                         }

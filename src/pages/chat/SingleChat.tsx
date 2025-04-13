@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   ApiGetAllChats,
   ApiGetAllChatsByConsultation,
+  ApiRateDoctor,
   ApiSendMessage,
 } from "../../api/chat";
 import { useUserStore } from "../../stores/tokenStore";
@@ -22,6 +23,8 @@ const SingleChat = () => {
   const { userProfile } = useUserStore();
   const [chats, setChats] = useState<ChatMessage[]>([]);
   const { id } = useParams();
+
+  console.log(id);
 
   const form = useForm({
     initialValues: {
@@ -99,7 +102,8 @@ const SingleChat = () => {
             <Icons.User className="size-32" />
           </div>
         ) : (
-          <div className="w-3/12 flex items-center justify-center">
+          <div className="w-3/12 flex flex-col items-center justify-center">
+            Rate this doctor in number
             <Icons.Stethescope className="size-32" />
           </div>
         )}
