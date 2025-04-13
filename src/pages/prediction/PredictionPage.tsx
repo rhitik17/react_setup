@@ -177,7 +177,7 @@ const PredictionPage = () => {
       patient_gender: "Male",
       message: "Hello",
       disease_name: "Test Disease",
-      consultation_date: "2024-05-18",
+      consultation_date: "2024-05-7",
     };
 
     try {

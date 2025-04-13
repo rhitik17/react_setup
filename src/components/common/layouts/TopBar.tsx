@@ -10,7 +10,7 @@ const TopBar = () => {
 
   };
   return (
-    <div className="h-20  flex  w-9/12 justify-between  items-center  text-black pr-8 fixed  left-3/12 top-0 ">
+    <div className="h-20  flex  w-10/12 justify-between  items-center  text-black pr-8 fixed  left-3/12 top-0 ">
       <TextInput
         leftSection={<Icons.Search />}
         className="rounded-xl outline-none"

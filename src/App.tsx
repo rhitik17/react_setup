@@ -40,7 +40,7 @@ function App() {
                           <Sidebar />
 
                           {/* Main Content Area */}
-                          <div className="w-9/12 flex flex-col  ">
+                          <div className="w-10/12 flex flex-col  ">
                           
                             <TopBar />
 

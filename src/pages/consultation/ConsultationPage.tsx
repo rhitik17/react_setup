@@ -124,7 +124,7 @@ const ConsultationPage = () => {
             </Title>
             <Stack gap="md">
               {consultations.map((consultation) => (
-                <Card key={consultation.id} withBorder p="md">
+                <Card key={consultation.id} withBorder p="md" radius="lg">
                   <Group justify="space-between">
                     <div>
                       <Text fw={500}>{consultation.disease_name}</Text>
@@ -132,17 +132,25 @@ const ConsultationPage = () => {
                         {consultation.specialist}
                       </Text>
                     </div>
-                    <Badge
-                      color="blue"
-                      variant="light"
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setSelectedConsultation(consultation);
-                        open();
-                      }}
-                    >
-                      View Details
-                    </Badge>
+                    <div className="flex gap-6">
+                      <Badge
+                        color="blue"
+                        variant="light"
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setSelectedConsultation(consultation);
+                          open();
+                        }}
+                      >
+                        View Details
+                      </Badge>
+
+                      <Badge color="red" variant="light" className="">
+                        {consultation?.status === "active"
+                          ? "Active"
+                          : "Pending"}
+                      </Badge>
+                    </div>
                   </Group>
                 </Card>
               ))}
@@ -154,13 +162,13 @@ const ConsultationPage = () => {
         opened={opened}
         onClose={close}
         centered
-        size="70%"
+        size="40%"
         title={
           <Text className="font-semibold text-2xl">Consultation Details</Text>
         }
       >
         {selectedConsultation && (
-          <Stack>
+          <Stack className="p-6">
             <Box className="border-b pb-4">
               <Text className="text-lg font-medium mb-2">
                 Patient Information
@@ -235,9 +243,10 @@ const ConsultationPage = () => {
                 </Button>
                 <Button
                   onClick={() => handleAccept(selectedConsultation?.id)}
-                  className="bg-green-400 hover:bg-primary-700 transition-colors duration-200"
+                  className="bg-green-400 hover:bg-primary-700 transition-colors duration-200 text-white"
+                  disabled={selectedConsultation?.status === "active"}
                 >
-                  Accept
+                {selectedConsultation?.status === "active" ? "Accepted" : "Accept"}
                 </Button>
               </Box>
             </Box>

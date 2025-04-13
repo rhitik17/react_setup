@@ -90,7 +90,7 @@ const Login = () => {
       if (response) {
         toast.success("login successfully");
         setUserProfile(response);
-        navigate("/home");
+        navigate("/dashboard");
       } else {
         toast.error(response.message || "Invalid response from server");
       }
