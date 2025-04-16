@@ -3,25 +3,31 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   forgetPassowrd,
   resendOtp,
+  setNewPassword,
 } from "../../services/endpoints/authService";
 import { toast } from "react-toastify";
 import FormInput from "../../components/common/FormInput";
 import RedButton from "../../components/common/RedButton";
 import { Icons } from "../../assets/icons";
+import PasswordInput from "../../components/common/PasswordInput";
+import { useUserStore } from "../../stores/tokenStore";
 
 interface OtpFormData {
   otp: string[];
   password: string;
+  confirmPassword: string;
 }
 
 const SetNewPassoword = () => {
   const [formData, setFormData] = useState<OtpFormData>({
-    otp: Array(6).fill(""),
+    otp: Array(4).fill(""),
     password: "",
+    confirmPassword: "",
   });
   const { input } = useParams();
   const decodedInput =
     typeof input === "string" ? decodeURIComponent(input) : "";
+  const { setUserProfile } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
   const [resendTimer, setResendTimer] = useState(0);
@@ -73,11 +79,13 @@ const SetNewPassoword = () => {
   };
 
   const validateForm = () => {
-    const { password, otp } = formData;
+    const { password, otp, confirmPassword } = formData;
     let errors: any = {};
 
     // Validate Permanent Address
     if (!password) errors.password = "Password is required.";
+    if (password != confirmPassword)
+      errors.confirmPassword = "Password and Conform Password donot match";
     if (!otp || otp.some((otpValue) => otpValue === ""))
       errors.otp = "OTP is required.";
 
@@ -98,20 +106,27 @@ const SetNewPassoword = () => {
 
     try {
       const payload = {
-        input: decodedInput,
+        email: decodedInput,
         otp: otp,
         password: formData.password,
       };
-      const response = await forgetPassowrd(payload);
+      const response = await setNewPassword(payload);
 
-      if (response?.message) {
+      if (response?.results?.token) {
         toast.success(response.message);
-        router("/login");
+        setUserProfile(response.results);
+        router("/dashboard");
       }
     } catch (err: any) {
-      toast.error(
-        err?.message || "Failed to verify your details. Please try again."
-      );
+      const errors = err?.response?.data?.error;
+
+      if (Array.isArray(errors)) {
+        errors.forEach((errorMsg: string) => toast.error(errorMsg));
+      } else {
+        toast.error(
+          err?.message || "Failed to verify your details. Please try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -172,30 +187,36 @@ const SetNewPassoword = () => {
           className="w-full flex flex-col gap-4  bg-white  "
         >
           <div className="flex flex-col gap-4">
-            <FormInput
-              label="Enter your OTP code"
-              name="otp"
-              type="text"
-              placeholder=""
-              onChange={handleInputChange}
-              InputClassName="h-11"
-              required={true}
-              error={errors?.otp}
-            />
-            <FormInput
+            <div className="w-full flex justify-center space-x-2">
+              {formData.otp.map((otpValue, index) => (
+                <input
+                  key={index}
+                  id={`otp-${index}`}
+                  name={`otp-${index}`}
+                  type="text"
+                  maxLength={1}
+                  autoComplete="off"
+                  required
+                  className="w-16 h-16 text-center  border-red-600 text-4xl font-bold text-red-600 border-2 rounded-lg focus:outline-none"
+                  value={otpValue}
+                  onChange={(e) => handleChange(e, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  onPaste={(e) => handlePaste(e, index)}
+                />
+              ))}
+            </div>
+            <PasswordInput
               label="Password"
               name="password"
-              type="password"
               placeholder=""
               onChange={handleInputChange}
               InputClassName="h-11"
               required={true}
               error={errors?.password}
             />
-            <FormInput
+            <PasswordInput
               label="Confirm Password"
               name="confirmPassword"
-              type="password"
               placeholder=""
               onChange={handleInputChange}
               InputClassName="h-11"
@@ -204,7 +225,7 @@ const SetNewPassoword = () => {
             />
           </div>
 
-          <p className="flex flex-row items-center justify-start gap-2">
+          {/* <p className="flex flex-row items-center justify-start gap-2">
             <FormInput
               type="checkbox"
               className="bg-gray-300 rounded-full p-1 text-white"
@@ -217,23 +238,7 @@ const SetNewPassoword = () => {
               className="bg-gray-300 rounded-full p-1 text-white"
             />{" "}
             <span> Must contain one special character</span>
-          </p>
-
-          {/* otp resend */}
-          {/* <div className="flex items-center justify-end ">
-                        <div className="w-full flex items-center justify-end">
-                            <button
-                                type="button"
-                                className="text-sm text-red-600 hover:text-red-500"
-                                onClick={handleResendCode}
-                                disabled={resendTimer > 0}
-                            >
-                                Resend OTP{resendTimer > 0 && ` (${resendTimer}s)`}
-                            </button>
-                        </div>
-                    </div> */}
-
-          {/* Sign In Button */}
+          </p> */}
 
           <RedButton
             text="Reset Password"

@@ -50,7 +50,7 @@ const ForgotPassword = () => {
 
       if (response?.message) {
         toast.success(response.message);
-        router(`/forgotPassword/${formData.input}`);
+        router(`/setNewPassword/${formData.email}`);
       }
 
       //   if (response?.results?.token) {

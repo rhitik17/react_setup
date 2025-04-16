@@ -66,12 +66,29 @@ export const resendOtp = async (formData: OtpData) => {
 };
 
 interface ForgetPasswordData {
-  input: string;
+  email: string;
 }
 
 export const forgetPassowrd = async (formData: ForgetPasswordData) => {
   try {
-    const response = await api.post("/systemuser/forgetPassword", formData, {});
+    const response = await api.post("auth/request-password-reset/", formData, {});
+    return response.data;
+  } catch (error) {
+    console.error("Error creating post:", error);
+    throw error;
+  }
+};
+
+
+interface SetNewPassword {
+  email: string;
+  otp:string;
+  password:string;
+}
+
+export const setNewPassword = async (formData: SetNewPassword) => {
+  try {
+    const response = await api.post("auth/reset-password/", formData, {});
     return response.data;
   } catch (error) {
     console.error("Error creating post:", error);

@@ -3,6 +3,7 @@ const ROUTES = {
   LOGIN: "/login",
   SIGNUP: "/register",
   FORGOTPASSWORD: "/forgot-password",
+  SETNEWPASSWORD:"/setNewPassword/:input",
   OTPVERIFY: "otp-verify",
   DASHBOARD: "/dashboard",
   PREDICT: "/predict",
