@@ -177,9 +177,9 @@ const PredictionPage = () => {
       patient: userProfile?.id,
 
       specialist: specialization,
-      patient_gender: "Male",
+      patient_gender: "Female",
       message: "Hello",
-      disease_name: "new Disease",
+      disease_name: " Disease very New",
       consultation_date: "2024-05-7",
     };
 

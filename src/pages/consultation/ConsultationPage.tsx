@@ -11,6 +11,7 @@ import {
   Tabs,
   TextInput,
   Textarea,
+  Select,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
@@ -47,8 +48,6 @@ const ConsultationPage = () => {
   const [rating, setRating] = useState<any>("");
   const [feedback, setFeedback] = useState<any>("");
 
-  console.log(selectedConsultation, "selected");
-
   const handleRateDoctor = async () => {
     if (!selectedConsultation?.id) return;
     try {
@@ -64,6 +63,7 @@ const ConsultationPage = () => {
       console.log(ratingResponse, feedbackResponse, "responses");
       toast.success("Doctor rated successfully");
       toast.success("Feedback sent successfully");
+      closeRate();
     } catch (error) {
       console.error("Error rating doctor:", error);
       toast.error("Failed to rate doctor");
@@ -472,18 +472,17 @@ const ConsultationPage = () => {
             <Text size="sm" mb={4}>
               Rating (1-5)
             </Text>
-            <TextInput
-              type="number"
-              value={rating}
-              min={1}
-              max={5}
-              placeholder="Enter rating from 1 to 5"
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                if (value >= 1 && value <= 5) {
-                  setRating(value);
-                }
-              }}
+            <Select
+              value={rating?.toString()}
+              onChange={(value) => setRating(Number(value))}
+              placeholder="Select rating from 1 to 5"
+              data={[
+                { value: "1", label: "1" },
+                { value: "2", label: "2" },
+                { value: "3", label: "3" },
+                { value: "4", label: "4" },
+                { value: "5", label: "5" },
+              ]}
             />
           </Box>
 
