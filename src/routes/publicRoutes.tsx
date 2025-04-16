@@ -4,6 +4,7 @@ import Register from "../pages/authentication/Register";
 import ForgotPassword from "../pages/authentication/ForgetPassoword";
 import OtpVerify from "../pages/authentication/OtpVerify";
 import Home from "../pages/home/Home";
+import SetNewPassoword from "../pages/authentication/SetNewPassword";
 
 export const publicRoutes = [
   { path: ROUTES.LOGIN, element: <Login /> },
@@ -11,5 +12,7 @@ export const publicRoutes = [
   { path: ROUTES.HOME, element: <Home /> },
 
   { path: ROUTES.FORGOTPASSWORD, element: <ForgotPassword /> },
+  { path: ROUTES.SETNEWPASSWORD, element: <SetNewPassoword /> },
+
   { path: ROUTES.OTPVERIFY, element: <OtpVerify /> },
 ];
