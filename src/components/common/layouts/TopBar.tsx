@@ -1,13 +1,18 @@
 import { Menu, Text, TextInput } from "@mantine/core";
 import { useUserStore } from "../../../stores/tokenStore";
 import { Icons } from "../../../assets/icons";
+import { useNavigate } from "react-router-dom";
 
 const TopBar = () => {
+  const navigate = useNavigate();
   const { userProfile, setUserProfile, removeUserProfile } = useUserStore();
 
   const handleLogout = () => {
     removeUserProfile();
+  };
 
+  const handleProfileClick = () => {
+    navigate("/profile");
   };
   return (
     <div className="h-20  flex  w-10/12 justify-between  items-center  text-black pr-8 fixed  left-3/12 top-0 ">
@@ -44,11 +49,14 @@ const TopBar = () => {
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                 <Icons.User className="w-5 h-5" />
               </div>
-              <span className="font-medium">{userProfile?.name}</span>
+              <span className="font-medium">{userProfile?.email}</span>
             </div>
           </Menu.Target>
-          <Menu.Dropdown className="mt-2">
-            <Menu.Item className="hover:bg-gray-100">
+          <Menu.Dropdown className=" min-w-40">
+            <Menu.Item
+              className="hover:bg-gray-100"
+              onClick={handleProfileClick}
+            >
               <Text size="sm">Profile</Text>
             </Menu.Item>
             <Menu.Item className="hover:bg-gray-100" onClick={handleLogout}>

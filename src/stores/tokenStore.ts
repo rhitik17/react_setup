@@ -7,7 +7,10 @@ interface UserStore {
     email: string | null;
     role: string | null;
     gender: string | null;
-    name: string | null;
+    full_name: string | null;
+    user_name:string | null;
+    address:string |null;
+    phone: string | null;
     userHandle: string | null;
     connectedTo: string | null;
     otpVerified: boolean | null;

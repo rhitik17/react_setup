@@ -7,7 +7,7 @@ import { otpVerify, resendOtp } from "../../services/endpoints/authService";
 import { toast } from "react-toastify";
 import { SpinningLoader2 } from "../../components/common/loading/SpinningLoader";
 import { Icons } from "../../assets/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface OtpFormData {
   otp: string[];
@@ -17,6 +17,9 @@ const OtpVerify = () => {
     otp: Array(4).fill(""),
   });
   const navigate = useNavigate();
+  const { input } = useParams();
+  const decodedInput =
+    typeof input === "string" ? decodeURIComponent(input) : "";
   const { email } = useEmailStore();
   const { setUserProfile } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +73,7 @@ const OtpVerify = () => {
 
     try {
       const payload = {
-        email: email,
+        email: decodedInput ? decodedInput : email,
         otp: otp,
       };
       const response = await otpVerify(payload);

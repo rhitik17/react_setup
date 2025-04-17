@@ -158,6 +158,10 @@ const diseaseOptions = [
   "red_sore_around_nose",
   "yellow_crust_ooze",
 ];
+
+const today = new Date();
+const formattedDate = today.toISOString().split("T")[0]; // "2025-04-17"
+
 const PredictionPage = () => {
   const { userProfile } = useUserStore();
   console.log(userProfile, "userProfile");
@@ -173,14 +177,12 @@ const PredictionPage = () => {
   ) => {
     const appointmentData = {
       doctor_id: doctorId,
-
       patient: userProfile?.id,
-
       specialist: specialization,
       patient_gender: "Male",
-      message: "Hello",
-      disease_name: "new Disease",
-      consultation_date: "2024-05-7",
+      message: "Message ",
+      disease_name: response ? response.disease : "",
+      consultation_date: formattedDate,
     };
 
     try {
@@ -287,7 +289,7 @@ const PredictionPage = () => {
                   </Text>
                 </div>
 
-                <div className="flex flex-col gap-6">
+                <div className="flex items-end gap-6">
                   <MultiSelect
                     label={
                       <Text className="text-lg font-medium text-gray-700 mb-2">
@@ -306,10 +308,10 @@ const PredictionPage = () => {
                         <Icons.Brain className="text-primary-500 w-6 h-6" />
                       ) : null
                     }
-                  />
+                  />  
 
                   <Button
-                    className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 
+                    className="w-fit px-4 flex-grow bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 
                                text-white font-medium rounded-xl shadow-xl hover:shadow-2xl 
                                transform hover:scale-102 transition-all duration-300"
                     onClick={handlePredict}

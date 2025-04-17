@@ -47,7 +47,6 @@ const ConsultationPage = () => {
   const [rating, setRating] = useState<any>("");
   const [feedback, setFeedback] = useState<any>("");
 
-  console.log(selectedConsultation, "selected");
 
   const handleRateDoctor = async () => {
     if (!selectedConsultation?.id) return;
@@ -158,7 +157,7 @@ const ConsultationPage = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState<string | null>("first");
+  const [activeTab, setActiveTab] = useState<string | null>("active");
 
   return (
     <Box className="p-8 ">
@@ -302,6 +301,8 @@ const ConsultationPage = () => {
                             >
                               View Details
                             </Badge>
+                            {userProfile?.role === "Patient" && (
+
                             <Badge
                               color="blue"
                               variant="light"
@@ -313,6 +314,7 @@ const ConsultationPage = () => {
                             >
                               Rate Doctor
                             </Badge>
+                            )}
                           </Box>
                         </Group>
                       </Card>
