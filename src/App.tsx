@@ -41,7 +41,6 @@ function App() {
 
                           {/* Main Content Area */}
                           <div className="w-10/12 flex flex-col  ">
-                          
                             <TopBar />
 
                             {/* Page Content */}

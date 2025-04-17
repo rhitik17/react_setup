@@ -8,9 +8,6 @@ import SingleChat from "../pages/chat/SingleChat";
 import Profile from "../pages/page";
 
 export const privateRoutes = [
-  { path: ROUTES.HOME, element: <Home /> },
-  { path: ROUTES.MYPROFILE, element: <Profile /> },
-
   { path: ROUTES.PREDICT, element: <PredictionPage /> },
   { path: ROUTES.CHATS, element: <Chats /> },
   { path: ROUTES.SINGLECHAT, element: <SingleChat /> },
@@ -19,5 +16,4 @@ export const privateRoutes = [
   { path: ROUTES.DOCTORS, element: <Dashboard /> },
 
   { path: ROUTES.DASHBOARD, element: <Dashboard /> },
-
 ];

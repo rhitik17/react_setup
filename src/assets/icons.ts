@@ -5,6 +5,7 @@ import {
   FaFemale,
   FaLinkedin,
   FaMale,
+  FaRobot,
   FaTransgender,
   FaUser,
   FaVirus,
@@ -37,12 +38,15 @@ import {
   LuHeart,
   LuStar,
   LuSchool,
+  LuClipboardList,
+  LuUserCheck,
+  LuChartBar,
 } from "react-icons/lu";
 import { LuMail } from "react-icons/lu";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { BsCheckCircle, BsCheckLg } from "react-icons/bs";
 import { GoPeople } from "react-icons/go";
-import { IoClose } from "react-icons/io5";
+import { IoAnalytics, IoClose } from "react-icons/io5";
 import { RiHome6Line } from "react-icons/ri";
 import { MdOutlinePlayCircleFilled } from "react-icons/md";
 import { LuLandmark } from "react-icons/lu";
@@ -98,4 +102,11 @@ export const Icons = {
   Agender: FaTransgender,
   StarFilled: LuStar,
   School: LuSchool,
+  ClipboardList:LuClipboardList,
+  Robot:FaRobot,
+  ReportAnalytics:IoAnalytics,
+  UserCheck:LuUserCheck,
+  Chartbar:LuChartBar,
+ 
+  
 };
