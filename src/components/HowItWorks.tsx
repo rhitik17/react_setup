@@ -1,32 +1,28 @@
 import { Container, Timeline, Title, Text, Paper } from "@mantine/core";
-import {
-  IconClipboardList,
-  IconRobot,
-  IconReportAnalytics,
-  IconUserCheck,
-} from "@tabler/icons-react";
+import { Icons } from "../assets/icons";
+
 
 const steps = [
   {
-    icon: IconClipboardList,
+    icon: Icons.ClipboardList,
     title: "Input Symptoms",
     description:
       "Enter your symptoms and health information into our user-friendly interface",
   },
   {
-    icon: IconRobot,
+    icon: Icons.Robot,
     title: "AI Analysis",
     description:
       "Our advanced AI system analyzes your symptoms using machine learning algorithms",
   },
   {
-    icon: IconReportAnalytics,
+    icon: Icons.ReportAnalytics,
     title: "Get Prediction",
     description:
       "Receive a detailed prediction report with potential conditions and confidence levels",
   },
   {
-    icon: IconUserCheck,
+    icon: Icons.UserCheck,
     title: "Expert Consultation",
     description:
       "Connect with healthcare professionals for verification and treatment plans",

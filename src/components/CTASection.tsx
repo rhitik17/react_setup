@@ -1,6 +1,6 @@
 import { Container, Title, Text, Button, Group } from "@mantine/core";
-import { IconArrowRight } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
+import { Icons } from "../assets/icons";
 
 export const CTASection = () => {
   return (
@@ -30,7 +30,7 @@ export const CTASection = () => {
             <Button
               size="lg"
               className="bg-white text-blue-600 "
-              rightSection={<IconArrowRight size={20} />}
+              rightSection={<Icons.ArrowRight size={20} />}
             >
               Explore Now
             </Button>

@@ -1,6 +1,7 @@
 import { Button, Container, Title, Text, Group } from "@mantine/core";
-import { IconStethoscope } from "@tabler/icons-react";
+
 import { Link } from "react-router-dom";
+import { Icons } from "../assets/icons";
 
 export const HeroSection = () => {
   return (
@@ -35,7 +36,7 @@ export const HeroSection = () => {
                   size="xl"
                   variant="outline"
                   className="border- border-white text-white hover:bg-white/10 px-8"
-                  rightSection={<IconStethoscope size={20} />}
+                  rightSection={<Icons.Stethescope size={20} />}
                 >
                   Get Started
                 </Button>

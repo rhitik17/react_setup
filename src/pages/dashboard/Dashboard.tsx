@@ -9,13 +9,9 @@ import {
 } from "@mantine/core";
 import { BarChart, LineChart, PieChart } from "@mantine/charts";
 import "@mantine/charts/styles.css";
+import { Icons } from "../../assets/icons";
 
-import {
-  IconUser,
-  IconStethoscope,
-  IconCalendar,
-  IconChartBar,
-} from "@tabler/icons-react";
+
 
 // Sample data for various charts
 const patientStats = [
@@ -68,7 +64,7 @@ const Dashboard = () => {
                 sections={[{ value: 75, color: "blue" }]}
                 label={
                   <Center>
-                    <IconUser size="1.4rem" stroke={1.5} />
+                    <Icons.User size="1.4rem"  />
                   </Center>
                 }
               />
@@ -103,7 +99,7 @@ const Dashboard = () => {
                 sections={[{ value: 85, color: "green" }]}
                 label={
                   <Center>
-                    <IconStethoscope size="1.4rem" stroke={1.5} />
+                    <Icons.Stethescope size="1.4rem" />
                   </Center>
                 }
               />
@@ -138,7 +134,7 @@ const Dashboard = () => {
                 sections={[{ value: 90, color: "orange" }]}
                 label={
                   <Center>
-                    <IconCalendar size="1.4rem" stroke={1.5} />
+                    <Icons.Calender size="1.4rem"  />
                   </Center>
                 }
               />
@@ -173,7 +169,7 @@ const Dashboard = () => {
                 sections={[{ value: 95, color: "violet" }]}
                 label={
                   <Center>
-                    <IconChartBar size="1.4rem" stroke={1.5} />
+                    <Icons.Chartbar size="1.4rem"  />
                   </Center>
                 }
               />

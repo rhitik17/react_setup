@@ -158,7 +158,7 @@ const ConsultationPage = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState<string | null>("first");
+  const [activeTab, setActiveTab] = useState<string | null>("active");
 
   return (
     <Box className="p-8 ">
@@ -207,15 +207,16 @@ const ConsultationPage = () => {
                             >
                               View Details
                             </Badge>
-
-                            <Badge
-                              color="red"
-                              variant="light"
-                              className="cursor-pointer"
-                              onClick={() => endConsultation(consultation.id)}
-                            >
-                              End Consultation
-                            </Badge>
+                            {userProfile?.role === "Patient" && (
+                              <Badge
+                                color="red"
+                                variant="light"
+                                className="cursor-pointer"
+                                onClick={() => endConsultation(consultation.id)}
+                              >
+                                End Consultation
+                              </Badge>
+                            )}
                           </Box>
                         </Group>
                       </Card>

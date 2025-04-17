@@ -1,46 +1,40 @@
 import { Container, Grid, Card, Text, Title, ThemeIcon } from "@mantine/core";
-import {
-  IconBrain,
-  IconStethoscope,
-  IconReportMedical,
-  IconHeartRateMonitor,
-  IconVirus,
-  IconClipboardCheck,
-} from "@tabler/icons-react";
+import { Icons } from "../assets/icons";
+
 
 const features = [
   {
-    icon: IconBrain,
+    icon: Icons.Brain,
     title: "AI-Powered Diagnosis",
     description:
       "Advanced machine learning algorithms analyze symptoms to provide accurate disease predictions",
   },
   {
-    icon: IconStethoscope,
+    icon: Icons.Stethescope,
     title: "Symptom Analysis",
     description:
       "Comprehensive evaluation of symptoms using medical knowledge base and patient history",
   },
   {
-    icon: IconReportMedical,
+    icon: Icons.Stethescope,
     title: "Detailed Reports",
     description:
       "Get detailed analysis reports with potential conditions and recommended next steps",
   },
   {
-    icon: IconHeartRateMonitor,
+    icon: Icons.Heart,
     title: "Real-time Monitoring",
     description:
       "Track your health parameters and get instant predictions when needed",
   },
   {
-    icon: IconVirus,
+    icon: Icons.Virus,
     title: "Disease Database",
     description:
       "Access information about various diseases, their symptoms, and preventive measures",
   },
   {
-    icon: IconClipboardCheck,
+    icon: Icons.Stethescope,
     title: "Health Recommendations",
     description:
       "Receive personalized health recommendations based on your prediction results",
