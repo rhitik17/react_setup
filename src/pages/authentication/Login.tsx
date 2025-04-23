@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import  {
-  useEmailStore,
-  useUserStore,
-} from "../../stores/tokenStore";
+import { useEmailStore, useUserStore } from "../../stores/tokenStore";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/common/FormInput";
 import PasswordInput from "../../components/common/PasswordInput";
@@ -95,8 +92,8 @@ const Login = () => {
         toast.error(response.message || "Invalid response from server");
       }
     } catch (error: any) {
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
+      if (error.response?.data) {
+        toast.error(error.response.data?.detail);
       } else {
         toast.error(error.message || "An error occurred");
       }

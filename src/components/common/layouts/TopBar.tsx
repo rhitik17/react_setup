@@ -24,7 +24,7 @@ const TopBar = () => {
               <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"></span>
             </button>
           </Menu.Target>
-          <Menu.Dropdown className="mt-2">
+          {/* <Menu.Dropdown className="mt-2">
             <Menu.Item className="hover:bg-gray-100">
               <div className="py-2">
                 <Text size="sm">Notification 1</Text>
@@ -35,7 +35,7 @@ const TopBar = () => {
                 <Text size="sm">Notification 2</Text>
               </div>
             </Menu.Item>
-          </Menu.Dropdown>
+          </Menu.Dropdown> */}
         </Menu>
 
         <Menu>

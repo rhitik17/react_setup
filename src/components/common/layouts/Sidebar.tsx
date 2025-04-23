@@ -38,13 +38,13 @@ const navItems = [
     to: "/medical-history",
     icon: <Icons.History className="mr-2" />,
     label: "Medical History",
-    roles: ["Patient"],
+    roles: [],
   },
   {
     to: "/settings",
     icon: <Icons.Settings className="mr-2" />,
     label: "Settings",
-    roles: ["Admin", "Doctor", "Patient"],
+    roles: [],
   },
   {
     to: "/logout",
