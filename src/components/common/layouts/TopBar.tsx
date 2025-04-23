@@ -1,13 +1,13 @@
 import { Menu, Text, TextInput } from "@mantine/core";
 import { useUserStore } from "../../../stores/tokenStore";
 import { Icons } from "../../../assets/icons";
+import { Link } from "react-router-dom";
 
 const TopBar = () => {
   const { userProfile, setUserProfile, removeUserProfile } = useUserStore();
 
   const handleLogout = () => {
     removeUserProfile();
-
   };
   return (
     <div className="h-20  flex  w-10/12 justify-between  items-center  text-black pr-8 fixed  left-3/12 top-0 ">
@@ -49,7 +49,9 @@ const TopBar = () => {
           </Menu.Target>
           <Menu.Dropdown className="mt-2">
             <Menu.Item className="hover:bg-gray-100">
-              <Text size="sm">Profile</Text>
+              <Link to="/profile">
+                <Text size="sm">Profile</Text>
+              </Link>
             </Menu.Item>
             <Menu.Item className="hover:bg-gray-100" onClick={handleLogout}>
               <Text size="sm" color="red">
