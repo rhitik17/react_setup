@@ -50,46 +50,89 @@ const Specialization = [
   "Urologist",
 ];
 
+const Qualification = ["MBBS", "BDS", "MD", "MS"];
+
 const Register = () => {
   const { email, setEmail } = useEmailStore();
   const [loading, setLoading] = useState(false);
   const router = useNavigate();
-  const [tabValue, setTabValue] = useState("Patient"); // State for tab value
+  const [tabValue, setTabValue] = useState("Patient");
 
-  const handleTabChange = (value: any) => {
-    setTabValue(value); // Update the tab value when tab changes
-  };
+const handleTabChange = (value: any) => {
+  setTabValue(value);
+};
 
-  console.log(tabValue);
+const form = useForm<FormValues>({
+  initialValues: {
+    email: email || "",
+    username: "",
+    name: "",
+    dob: "",
+    address: "",
+    mobile_no: "",
+    gender: "Male",
+    registration_no: "",
+    year_of_registration: "",
+    qualification: "MBBS",
+    specialization: "Cardiologist",
+    state_medical_council: "Nepal Medical Council",
+    password: "",
+    confirm_password: "",
+  },
 
-  const form = useForm<FormValues>({
-    initialValues: {
-      email: email || "",
-      username: "",
-      name: "",
-      dob: "",
-      address: "",
-      mobile_no: "",
-      gender: "Male",
-      password: "",
-      confirm_password: "",
+  validate: {
+    email: (value: string) =>
+      /^\S+@\S+$/.test(value) ? null : "Invalid email",
+    username: (value: string) => (value ? null : "Username is required"),
+    name: (value: string) => (value ? null : "Name is required"),
+    dob: (value: string) => (value ? null : "Date of birth is required"),
+    address: (value: string) => (value ? null : "Address is required"),
+    mobile_no: (value: string) =>
+      value ? null : "Mobile number is required",
+
+    registration_no: (value?: string) => {
+      if (tabValue === "Doctor") {
+        return value ? null : "Registration number is required";
+      }
+      return null;
     },
 
-    validate: {
-      email: (value: string) =>
-        /^\S+@\S+$/.test(value) ? null : "Invalid email",
-      username: (value: string) => (value ? null : "Username is required"),
-      name: (value: string) => (value ? null : "Name is required"),
-      dob: (value: string) => (value ? null : "Date of birth is required"),
-      address: (value: string) => (value ? null : "Address is required"),
-      mobile_no: (value: string) =>
-        value ? null : "Mobile number is required",
-      password: (value: string) =>
-        value.length < 6 ? "Password must be at least 6 characters" : null,
-      confirm_password: (value: string) =>
-        !value ? "Passwords did not match" : null,
+    year_of_registration: (value?: string) => {
+      if (tabValue === "Doctor") {
+        return value ? null : "Registration year is required";
+      }
+      return null;
     },
-  });
+
+    qualification: (value?: string) => {
+      if (tabValue === "Doctor") {
+        return value ? null : "Qualification is required";
+      }
+      return null;
+    },
+
+    specialization: (value?: string) => {
+      if (tabValue === "Doctor") {
+        return value ? null : "Specialization is required";
+      }
+      return null;
+    },
+
+    state_medical_council: (value?: string) => {
+      if (tabValue === "Doctor") {
+        return value ? null : "Medical council is required";
+      }
+      return null;
+    },
+
+    password: (value: string) =>
+      value.length < 6 ? "Password must be at least 6 characters" : null,
+
+    confirm_password: (value: string) =>
+      !value ? "Passwords did not match" : null,
+  },
+});
+
 
   useEffect(() => {
     if (email) {
@@ -151,15 +194,15 @@ const Register = () => {
           onChange={handleTabChange}
           className="w-full space-y-4"
         >
-          <Tabs.List className="">
-            <Tabs.Tab value="Patient" leftSection={<Icons.Settings size={12} />}>
+          <Tabs.List className="flex gap-8">
+            <Tabs.Tab
+              value="Patient"
+              leftSection={<Icons.Settings size={12} />}
+            >
               Patient
             </Tabs.Tab>
             <Tabs.Tab value="Doctor" leftSection={<Icons.Settings size={12} />}>
               Doctor
-            </Tabs.Tab>
-            <Tabs.Tab value="Admin" leftSection={<Icons.Settings size={12} />}>
-              Admin
             </Tabs.Tab>
           </Tabs.List>
 
@@ -301,24 +344,21 @@ const Register = () => {
                 />
 
                 <TextInput
+                  type="date"
                   label="Year of Registration"
-                  placeholder="Enter your year of registration"
                   {...form.getInputProps("year_of_registration")}
-                  defaultValue="2015"
                 />
 
-                <TextInput
+                <Select
                   label="Qualification"
-                  placeholder="Enter your qualification"
+                  data={Qualification}
                   {...form.getInputProps("qualification")}
-                  defaultValue="MBBS"
                 />
 
                 <Select
                   label="Specialization"
                   placeholder="Enter your specialization"
                   {...form.getInputProps("specialization")}
-                  defaultValue="Allergist"
                   data={Specialization}
                 />
 
@@ -326,83 +366,6 @@ const Register = () => {
                   label="State Medical Council"
                   placeholder="Enter your state medical council"
                   {...form.getInputProps("state_medical_council")}
-                  defaultValue="Illinois State Medical Board"
-                />
-
-                <PasswordInput
-                  label="Password"
-                  placeholder="Enter password"
-                  {...form.getInputProps("password")}
-                  defaultValue="testpassword123"
-                />
-
-                <PasswordInput
-                  label="Confirm Password"
-                  placeholder="Confirm password"
-                  {...form.getInputProps("confirm_password")}
-                  defaultValue="testpassword123"
-                />
-
-                <Button
-                  type="submit"
-                  className="bg-red-600 col-span-2 mt-2"
-                  loading={loading}
-                  fullWidth
-                >
-                  Register
-                </Button>
-              </Stack>
-            </form>
-          </Tabs.Panel>
-
-          <Tabs.Panel value="Admin">
-            {" "}
-            <form onSubmit={form.onSubmit(handleSubmit)} className="w-full">
-              <Stack gap={"sm"} className="grid grid-cols-2 gap-4">
-                <TextInput
-                  label="Full Name"
-                  className="col-span-2"
-                  placeholder="Enter your full name"
-                  {...form.getInputProps("name")}
-                />
-                <TextInput
-                  label="Email"
-                  placeholder="Enter your email"
-                  {...form.getInputProps("email")}
-                />
-
-                <TextInput
-                  label="Username"
-                  placeholder="Choose a username"
-                  {...form.getInputProps("username")}
-                />
-
-                <TextInput
-                  type="date"
-                  label="Date of Birth"
-                  {...form.getInputProps("dob")}
-                />
-
-                <TextInput
-                  label="Address"
-                  placeholder="Enter your address"
-                  {...form.getInputProps("address")}
-                />
-
-                <TextInput
-                  label="Mobile Number"
-                  placeholder="Enter your mobile number"
-                  {...form.getInputProps("mobile_no")}
-                />
-
-                <Select
-                  label="Gender"
-                  data={[
-                    { value: "Male", label: "Male" },
-                    { value: "Female", label: "Female" },
-                    { value: "Other", label: "Other" },
-                  ]}
-                  {...form.getInputProps("gender")}
                 />
 
                 <PasswordInput

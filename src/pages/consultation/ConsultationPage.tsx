@@ -28,82 +28,66 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ApiRateDoctor, ApiSendFeedback, ApiSendMessage } from "../../api/chat";
 
-const ConsultationPage = () => {
-  interface Doctor {
-    id: string;
-    full_name: string;
-    specialization: string;
-  }
+interface FormValues {
+  rating: number;
+  feedback: string;
+}
 
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+const ConsultationPage = () => {
   const [consultations, setConsultations] = useState<any[]>([]);
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [opened, { open, close }] = useDisclosure(false);
+  const [openedRate, { open: openRate, close: closeRate }] =
+    useDisclosure(false);
 
   const { userProfile } = useUserStore();
 
   const isPatient = userProfile?.role === "Patient";
   const navigate = useNavigate();
 
-  const [rating, setRating] = useState<any>("");
-  const [feedback, setFeedback] = useState<any>("");
-
-  const handleRateDoctor = async () => {
-    if (!selectedConsultation?.id) return;
-    try {
-      const payload = {
-        doctor: selectedConsultation?.doctor,
-        feedback: feedback,
-      };
-      // Execute both API calls in parallel using Promise.all
-      const [ratingResponse, feedbackResponse] = await Promise.all([
-        ApiRateDoctor(selectedConsultation?.id, rating),
-        ApiSendFeedback(payload),
-      ]);
-      console.log(ratingResponse, feedbackResponse, "responses");
-      toast.success("Doctor rated successfully");
-      toast.success("Feedback sent successfully");
-      closeRate();
-    } catch (error) {
-      console.error("Error rating doctor:", error);
-      toast.error("Failed to rate doctor");
-    }
-  };
-
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
-      doctor_id: "51df7608-b3ba-4be1-a080-a721af043748",
-      patient: "52878ab7-4502-4bce-9b72-1c2167493326",
-      specialist: "Cardiologist",
-      patient_gender: "Male",
-      message: "Hello",
-      disease_name: "Test Disease",
-      consultation_date: "2024-05-16",
+      rating: 3,
+      feedback: "",
     },
     validate: {
-      specialist: (value) => (!value ? "Please enter specialist type" : null),
-      patient_gender: (value) => (!value ? "Please select gender" : null),
-      disease_name: (value) => (!value ? "Please enter disease name" : null),
+      rating: (value) => (!value ? "Please select value" : null),
+      feedback: (value) =>
+        !value ? "Feedback must be of  at least 2 character" : null,
     },
   });
 
-  const [opened, { open, close }] = useDisclosure(false);
-  const [openedRate, { open: openRate, close: closeRate }] =
-    useDisclosure(false);
-  const fetchDoctors = async () => {
+  const handleRateDoctor = async (values: FormValues) => {
+    if (!selectedConsultation?.id) return;
+  
     try {
-      const response = await APIGetAllDoctors();
-      if (response?.data?.results) {
-        setDoctors(response?.data?.results);
-      } else {
-        console.warn("No doctors data found in response");
-        setDoctors([]);
-      }
-    } catch (error) {
-      console.error("Error fetching doctors:", error);
-      setDoctors([]);
+      // First call: ApiRateDoctor
+      await ApiRateDoctor(selectedConsultation.id, values.rating);
+      toast.success("Doctor rated successfully");
+  
+      await ApiSendFeedback({
+        doctor: selectedConsultation.doctor,
+        feedback: values.feedback,
+      });
+  
+      toast.success("Feedback sent successfully");
+      closeRate();
+    } catch (error: any) {
+      console.error("Error rating doctor:", error);
+  
+      // Show only ApiRateDoctor error
+      const errorMessage =
+        error?.response?.data?.non_field_errors?.[0] ||
+        error?.response?.data?.detail ||
+        "Failed to rate doctor";
+  
+      toast.error(errorMessage);
     }
   };
+  
+  
 
   const fetchConsultations = async () => {
     try {
@@ -121,7 +105,6 @@ const ConsultationPage = () => {
 
   useEffect(() => {
     fetchConsultations();
-    fetchDoctors();
   }, []);
 
   const postInitialMessage = async (id: number) => {
@@ -207,7 +190,7 @@ const ConsultationPage = () => {
                             >
                               View Details
                             </Badge>
-                            {userProfile?.role === "Patient" && (
+                            {isPatient && (
                               <Badge
                                 color="red"
                                 variant="light"
@@ -303,17 +286,20 @@ const ConsultationPage = () => {
                             >
                               View Details
                             </Badge>
-                            <Badge
-                              color="blue"
-                              variant="light"
-                              className="cursor-pointer"
-                              onClick={() => {
-                                setSelectedConsultation(consultation);
-                                openRate();
-                              }}
-                            >
-                              Rate Doctor
-                            </Badge>
+
+                            {isPatient && (
+                              <Badge
+                                color="blue"
+                                variant="light"
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  setSelectedConsultation(consultation);
+                                  openRate();
+                                }}
+                              >
+                                Rate Doctor
+                              </Badge>
+                            )}
                           </Box>
                         </Group>
                       </Card>
@@ -384,7 +370,7 @@ const ConsultationPage = () => {
                   <Text size="sm" c="dimmed">
                     Patient Name
                   </Text>
-                  <Text>{selectedConsultation.full_name}</Text>
+                  <Text>{selectedConsultation.patient_name}</Text>
                 </Box>
                 <Box>
                   <Text size="sm" c="dimmed">
@@ -443,20 +429,23 @@ const ConsultationPage = () => {
                   </Text>
                 </Box>
               </Stack>
-              <Box className="flex justify-between pt-4">
-                <Button className="bg-red-500 hover:bg-red-700 transition-colors duration-200">
-                  Reject
-                </Button>
-                <Button
-                  onClick={() => handleAccept(selectedConsultation?.id)}
-                  className="bg-green-400 hover:bg-primary-700 transition-colors duration-200 text-white"
-                  disabled={selectedConsultation?.status === "active"}
-                >
-                  {selectedConsultation?.status === "active"
-                    ? "Accepted"
-                    : "Accept"}
-                </Button>
-              </Box>
+
+              {selectedConsultation.status === "requested" && (
+                <Box className="flex justify-between pt-4">
+                  <Button className="bg-red-500 hover:bg-red-700 transition-colors duration-200">
+                    Reject
+                  </Button>
+                  <Button
+                    onClick={() => handleAccept(selectedConsultation?.id)}
+                    className="bg-green-400 hover:bg-primary-700 transition-colors duration-200 text-white"
+                    disabled={selectedConsultation?.status === "active"}
+                  >
+                    {selectedConsultation?.status === "active"
+                      ? "Accepted"
+                      : "Accept"}
+                  </Button>
+                </Box>
+              )}
             </Box>
           </Stack>
         )}
@@ -465,17 +454,16 @@ const ConsultationPage = () => {
         opened={openedRate}
         onClose={closeRate}
         centered
-        size="70%"
+        size="40%"
         title={<Text className="font-semibold text-2xl">Rate Doctor</Text>}
       >
-        <Stack gap="md">
+        <form onSubmit={form.onSubmit(handleRateDoctor)} className="space-y-8 py-4">
           <Box>
             <Text size="sm" mb={4}>
               Rating (1-5)
             </Text>
             <Select
-              value={rating?.toString()}
-              onChange={(value) => setRating(Number(value))}
+              {...form.getInputProps("rating")}
               placeholder="Select rating from 1 to 5"
               data={[
                 { value: "1", label: "1" },
@@ -492,21 +480,20 @@ const ConsultationPage = () => {
               Feedback
             </Text>
             <Textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
+              {...form.getInputProps("feedback")}
               placeholder="Please provide your feedback about the doctor"
-              minRows={4}
+              minRows={5}
               className="w-full"
             />
           </Box>
 
           <Button
             className="bg-primary-500 hover:bg-primary-600 text-white w-full mt-4"
-            onClick={handleRateDoctor}
+           type="submit"
           >
             Submit Rating
           </Button>
-        </Stack>
+        </form>
       </Modal>
     </Box>
   );

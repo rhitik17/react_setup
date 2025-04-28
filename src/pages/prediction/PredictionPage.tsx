@@ -160,7 +160,6 @@ const diseaseOptions = [
 ];
 const PredictionPage = () => {
   const { userProfile } = useUserStore();
-  console.log(userProfile, "userProfile");
   //   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   //   const [selectedSpecialist, setSelectedSpecialist] = useState<string | null>(
   //     null
@@ -171,16 +170,22 @@ const PredictionPage = () => {
 
     specialization: string
   ) => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+    const day = String(today.getDate()).padStart(2, "0");
+
+    // Format: YYYY-MM-DD
+    const formattedDate = `${year}-${month}-${day}`;
+
     const appointmentData = {
       doctor_id: doctorId,
-
       patient: userProfile?.id,
-
       specialist: specialization,
-      patient_gender: "Female",
+      patient_gender: userProfile?.gender,
       message: "Hello",
-      disease_name: " Disease very New",
-      consultation_date: "2024-05-7",
+      disease_name: response?.disease,
+      consultation_date: formattedDate, // dynamic today date
     };
 
     try {
@@ -190,7 +195,10 @@ const PredictionPage = () => {
       if (response) {
         toast.success("Appointment booked successfully");
       }
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.non_field_errors?.[0] || "Something went wrong"
+      );
       console.error("Error booking appointment:", error);
     }
   };
@@ -209,7 +217,7 @@ const PredictionPage = () => {
     try {
       setLoading(true);
       const data = await APIGetDoctorsBySpecialization(response?.prediction_id);
-      setDoctors(data?.data?.results); // Assuming response is an array of doctors
+      setDoctors(data?.data?.results);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching doctors:", error);
@@ -223,6 +231,7 @@ const PredictionPage = () => {
     recommended_specialization: string;
     prediction_id: number;
   } | null>(null);
+
   const handlePredict = async () => {
     const payload = {
       symptoms: selectedDiseases,
@@ -540,7 +549,7 @@ const PredictionPage = () => {
                         </div>
                       </div>
                     </div>
-                    <Box className="flex justify-between">
+                    <Box className="flex w-full ">
                       <Button
                         onClick={() =>
                           handleBookAppointment(
@@ -549,15 +558,9 @@ const PredictionPage = () => {
                             doctor?.specialization
                           )
                         }
-                        className="bg-primary-500 hover:bg-slate-600 transition-all   shadow-lg transform hover:scale-105"
+                        className="w-full bg-primary-500 hover:bg-slate-600 transition-all   shadow-lg transform hover:scale-105"
                       >
                         Book Appointment
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className=" transition-all   shadow-lg transform hover:scale-105"
-                      >
-                        Write a review
                       </Button>
                     </Box>
                   </Box>

@@ -19,10 +19,15 @@ const TopBar = () => {
       <div className="flex items-center space-x-4">
         <Menu>
           <Menu.Target>
-            <button className="p-2 hover:bg-white/10 rounded-full transition-colors duration-200 relative">
+
+          <Link to="/feedbacks">
+             
+            <button className="p-2 hover:bg-white/10 rounded-full transition-colors duration-200 relative"
+            >
               <Icons.Bell className="w-6 h-6" />
               <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"></span>
             </button>
+              </Link>
           </Menu.Target>
           {/* <Menu.Dropdown className="mt-2">
             <Menu.Item className="hover:bg-gray-100">

@@ -21,6 +21,10 @@ interface ChatMessage {
   isTemporary?: boolean;
 }
 
+interface FormValues {
+  message:string;
+}
+
 const SingleChat = () => {
   const { userProfile } = useUserStore();
   const [chatWith, setChatWith] = useState("");
@@ -31,21 +35,23 @@ const SingleChat = () => {
 
   console.log(id);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       message: "",
     },
     validate: {
       message: (value) =>
-        value.length < 4 ? "Write a message longer than 4 characters" : null,
+        value.length < 2 ? "Write a message longer than 2 characters" : null,
     },
   });
 
-  const handleSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSendMessage = async (values:FormValues) => {
+
+
+
     if (!userProfile?.email) return;
 
-    const messageText = form.values.message;
+    const messageText = values.message;
     if (!messageText) return;
 
     // Create temporary message
@@ -209,7 +215,7 @@ const SingleChat = () => {
             </div>
 
             <Box className="py-6 border-t flex justify-between w-full max-w-3xl mx-auto">
-              <form onSubmit={handleSendMessage} className="w-full flex gap-4">
+              <form onSubmit={form.onSubmit(handleSendMessage)} className="w-full flex gap-4">
                 <TextInput
                   {...form.getInputProps("message")}
                   className="w-full"

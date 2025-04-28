@@ -11,6 +11,7 @@ const ROUTES = {
   CHATS: "/chats",
   SINGLECHAT: "/chat/:id",
   CONSULTATION: "/consultation",
+  FEEDBACKS:"/feedbacks",
   PROFILE: "/profile",
   SETTINGS: "/settings",
   NOT_FOUND: "*",
